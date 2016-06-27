@@ -60,7 +60,9 @@
 }
 
 #pragma mark -- CustomMethod
--(BOOL)createAudioConvert{ //根据输入样本初始化一个编码转换器
+
+//根据输入样本初始化一个编码转换器
+-(BOOL)createAudioConvert {
     if (_m_converter != nil){
         return TRUE;
     }

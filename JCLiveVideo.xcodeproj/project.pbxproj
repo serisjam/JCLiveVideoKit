@@ -122,6 +122,7 @@
 		0DACD7E21D1E277200C212A5 /* JCLiveVideoKit */ = {
 			isa = PBXGroup;
 			children = (
+				39370C921D213177001075DE /* rtmp */,
 				0DACD7E31D1E279000C212A5 /* JCLiveAudio */,
 				0DACD7E41D1E279000C212A5 /* JCLiveVideo */,
 			);
@@ -170,6 +171,13 @@
 				35D41FFA194879E2F35BD105 /* Pods-JCLiveVideo.release.xcconfig */,
 			);
 			name = Pods;
+			sourceTree = "<group>";
+		};
+		39370C921D213177001075DE /* rtmp */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = rtmp;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
