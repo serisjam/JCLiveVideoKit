@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10117" systemVersion="15F34" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="wZe-Mn-SNc">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10117" systemVersion="15D21" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="wZe-Mn-SNc">
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
@@ -10,17 +10,21 @@
             <objects>
                 <tableViewController id="rqC-as-BoT" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="static" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" id="euv-32-ZPK">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <sections>
                             <tableViewSection id="DBP-lc-NS1">
                                 <cells>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" textLabel="kBV-SR-1v3" style="IBUITableViewCellStyleDefault" id="TpN-bk-O2s">
+                                        <rect key="frame" x="0.0" y="64" width="600" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="TpN-bk-O2s" id="ngo-fp-laG">
+                                            <rect key="frame" x="0.0" y="0.0" width="600" height="43"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="videoCapture" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="kBV-SR-1v3">
+                                                    <rect key="frame" x="15" y="0.0" width="570" height="43"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
@@ -33,6 +37,29 @@
                                         </tableViewCellContentView>
                                         <connections>
                                             <segue destination="BYZ-38-t0r" kind="show" id="Oko-9v-0eY"/>
+                                        </connections>
+                                    </tableViewCell>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" textLabel="OBn-Fz-Rmd" style="IBUITableViewCellStyleDefault" id="lLz-Qt-qZB">
+                                        <rect key="frame" x="0.0" y="64" width="600" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="lLz-Qt-qZB" id="bPb-6v-Aak">
+                                            <rect key="frame" x="0.0" y="0.0" width="600" height="43"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="audioCapture" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="OBn-Fz-Rmd">
+                                                    <rect key="frame" x="15" y="0.0" width="570" height="43"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                                    <nil key="highlightedColor"/>
+                                                    <variation key="heightClass=regular-widthClass=compact">
+                                                        <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                                    </variation>
+                                                </label>
+                                            </subviews>
+                                        </tableViewCellContentView>
+                                        <connections>
+                                            <segue destination="MkO-f8-Hxx" kind="show" id="LS9-LW-ye0"/>
                                         </connections>
                                     </tableViewCell>
                                 </cells>
@@ -65,6 +92,101 @@
             </objects>
             <point key="canvasLocation" x="-1476" y="341.25"/>
         </scene>
+        <!--Audio Capture View Controller-->
+        <scene sceneID="VUk-MA-IJD">
+            <objects>
+                <viewController id="MkO-f8-Hxx" customClass="AudioCaptureViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="VA2-2a-PAN"/>
+                        <viewControllerLayoutGuide type="bottom" id="ToI-PW-hHQ"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="FIr-2c-8mo">
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="x9u-UQ-L8A">
+                                <rect key="frame" x="-23" y="-15" width="46" height="30"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="30" id="0Dq-d7-xWN"/>
+                                    <constraint firstAttribute="width" constant="46" id="DsF-iD-gHR"/>
+                                </constraints>
+                                <state key="normal" title="start"/>
+                                <variation key="default">
+                                    <mask key="constraints">
+                                        <exclude reference="0Dq-d7-xWN"/>
+                                        <exclude reference="DsF-iD-gHR"/>
+                                    </mask>
+                                </variation>
+                                <variation key="heightClass=regular-widthClass=compact">
+                                    <mask key="constraints">
+                                        <include reference="0Dq-d7-xWN"/>
+                                        <include reference="DsF-iD-gHR"/>
+                                    </mask>
+                                </variation>
+                                <connections>
+                                    <action selector="onStart:" destination="MkO-f8-Hxx" eventType="touchUpInside" id="N8D-Ql-2fF"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="TSo-jg-MmJ">
+                                <rect key="frame" x="-23" y="-15" width="46" height="30"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="30" id="EBt-2I-pm1"/>
+                                    <constraint firstAttribute="width" constant="46" id="Rj7-qL-rpD"/>
+                                </constraints>
+                                <state key="normal" title="stop"/>
+                                <variation key="default">
+                                    <mask key="constraints">
+                                        <exclude reference="EBt-2I-pm1"/>
+                                        <exclude reference="Rj7-qL-rpD"/>
+                                    </mask>
+                                </variation>
+                                <variation key="heightClass=regular-widthClass=compact">
+                                    <mask key="constraints">
+                                        <include reference="EBt-2I-pm1"/>
+                                        <include reference="Rj7-qL-rpD"/>
+                                    </mask>
+                                </variation>
+                                <connections>
+                                    <action selector="onStop:" destination="MkO-f8-Hxx" eventType="touchUpInside" id="VK4-T6-Hv2"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstAttribute="trailing" secondItem="TSo-jg-MmJ" secondAttribute="trailing" constant="20" id="Wx1-Ng-KMG"/>
+                            <constraint firstItem="x9u-UQ-L8A" firstAttribute="leading" secondItem="FIr-2c-8mo" secondAttribute="leading" constant="20" id="g7a-2s-G7N"/>
+                            <constraint firstItem="ToI-PW-hHQ" firstAttribute="top" secondItem="x9u-UQ-L8A" secondAttribute="bottom" constant="8" id="iOC-3r-wfj"/>
+                            <constraint firstItem="ToI-PW-hHQ" firstAttribute="top" secondItem="TSo-jg-MmJ" secondAttribute="bottom" constant="8" id="opM-JB-Ec8"/>
+                        </constraints>
+                        <variation key="default">
+                            <mask key="subviews">
+                                <exclude reference="x9u-UQ-L8A"/>
+                                <exclude reference="TSo-jg-MmJ"/>
+                            </mask>
+                            <mask key="constraints">
+                                <exclude reference="g7a-2s-G7N"/>
+                                <exclude reference="iOC-3r-wfj"/>
+                                <exclude reference="opM-JB-Ec8"/>
+                                <exclude reference="Wx1-Ng-KMG"/>
+                            </mask>
+                        </variation>
+                        <variation key="heightClass=regular-widthClass=compact">
+                            <mask key="subviews">
+                                <include reference="x9u-UQ-L8A"/>
+                                <include reference="TSo-jg-MmJ"/>
+                            </mask>
+                            <mask key="constraints">
+                                <include reference="g7a-2s-G7N"/>
+                                <include reference="iOC-3r-wfj"/>
+                                <include reference="opM-JB-Ec8"/>
+                                <include reference="Wx1-Ng-KMG"/>
+                            </mask>
+                        </variation>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Q5U-Z1-Lf5" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="540" y="1091.25"/>
+        </scene>
         <!--View Controller-->
         <scene sceneID="tne-QT-ifu">
             <objects>
@@ -90,6 +212,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
+            <point key="canvasLocation" x="540" y="341.25"/>
         </scene>
     </scenes>
 </document>

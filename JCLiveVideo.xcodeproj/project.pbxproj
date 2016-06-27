@@ -21,6 +21,9 @@
 		0DACD7F21D1E2ACB00C212A5 /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0DACD7F11D1E2ACB00C212A5 /* CoreAudio.framework */; };
 		0DFA53F11D1EDE9D004CFF11 /* JCAudioCapture.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DFA53F01D1EDE9D004CFF11 /* JCAudioCapture.m */; };
 		0DFA53F31D1EDEAC004CFF11 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0DFA53F21D1EDEAC004CFF11 /* AudioToolbox.framework */; };
+		1652A2D72F134F7B52B99F9A /* libPods-JCLiveVideo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 34FB9414F82AACFE2409E85B /* libPods-JCLiveVideo.a */; };
+		396151B71D20C6D1009B40FC /* AudioCaptureViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 396151B61D20C6D1009B40FC /* AudioCaptureViewController.m */; };
+		396151BA1D20F88C009B40FC /* JCAACEncoder.m in Sources */ = {isa = PBXBuildFile; fileRef = 396151B91D20F88C009B40FC /* JCAACEncoder.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -45,6 +48,13 @@
 		0DFA53EF1D1EDE9D004CFF11 /* JCAudioCapture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JCAudioCapture.h; sourceTree = "<group>"; };
 		0DFA53F01D1EDE9D004CFF11 /* JCAudioCapture.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JCAudioCapture.m; sourceTree = "<group>"; };
 		0DFA53F21D1EDEAC004CFF11 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
+		34819DEA12095F06C0F4DBAF /* Pods-JCLiveVideo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-JCLiveVideo.debug.xcconfig"; path = "Pods/Target Support Files/Pods-JCLiveVideo/Pods-JCLiveVideo.debug.xcconfig"; sourceTree = "<group>"; };
+		34FB9414F82AACFE2409E85B /* libPods-JCLiveVideo.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-JCLiveVideo.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		35D41FFA194879E2F35BD105 /* Pods-JCLiveVideo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-JCLiveVideo.release.xcconfig"; path = "Pods/Target Support Files/Pods-JCLiveVideo/Pods-JCLiveVideo.release.xcconfig"; sourceTree = "<group>"; };
+		396151B51D20C6D1009B40FC /* AudioCaptureViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AudioCaptureViewController.h; sourceTree = "<group>"; };
+		396151B61D20C6D1009B40FC /* AudioCaptureViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AudioCaptureViewController.m; sourceTree = "<group>"; };
+		396151B81D20F88C009B40FC /* JCAACEncoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JCAACEncoder.h; sourceTree = "<group>"; };
+		396151B91D20F88C009B40FC /* JCAACEncoder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JCAACEncoder.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -57,6 +67,7 @@
 				0DACD7F01D1E2AC100C212A5 /* CoreVideo.framework in Frameworks */,
 				0DACD7EE1D1E2ABB00C212A5 /* VideoToolbox.framework in Frameworks */,
 				0DACD7EC1D1E2AB200C212A5 /* AVFoundation.framework in Frameworks */,
+				1652A2D72F134F7B52B99F9A /* libPods-JCLiveVideo.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -69,6 +80,7 @@
 				0DACD7CA1D1E274800C212A5 /* JCLiveVideo */,
 				0DACD7EA1D1E2A9900C212A5 /* Frameworks */,
 				0DACD7C91D1E274800C212A5 /* Products */,
+				1E24846D96784BF29BBAE3C2 /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -88,6 +100,8 @@
 				0DACD7CF1D1E274800C212A5 /* AppDelegate.m */,
 				0DACD7D11D1E274800C212A5 /* ViewController.h */,
 				0DACD7D21D1E274800C212A5 /* ViewController.m */,
+				396151B51D20C6D1009B40FC /* AudioCaptureViewController.h */,
+				396151B61D20C6D1009B40FC /* AudioCaptureViewController.m */,
 				0DACD7D41D1E274800C212A5 /* Main.storyboard */,
 				0DACD7D71D1E274800C212A5 /* Assets.xcassets */,
 				0DACD7D91D1E274800C212A5 /* LaunchScreen.storyboard */,
@@ -117,6 +131,8 @@
 		0DACD7E31D1E279000C212A5 /* JCLiveAudio */ = {
 			isa = PBXGroup;
 			children = (
+				396151B81D20F88C009B40FC /* JCAACEncoder.h */,
+				396151B91D20F88C009B40FC /* JCAACEncoder.m */,
 				0DFA53EF1D1EDE9D004CFF11 /* JCAudioCapture.h */,
 				0DFA53F01D1EDE9D004CFF11 /* JCAudioCapture.m */,
 			);
@@ -142,8 +158,18 @@
 				0DACD7EF1D1E2AC100C212A5 /* CoreVideo.framework */,
 				0DACD7ED1D1E2ABB00C212A5 /* VideoToolbox.framework */,
 				0DACD7EB1D1E2AB200C212A5 /* AVFoundation.framework */,
+				34FB9414F82AACFE2409E85B /* libPods-JCLiveVideo.a */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		1E24846D96784BF29BBAE3C2 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				34819DEA12095F06C0F4DBAF /* Pods-JCLiveVideo.debug.xcconfig */,
+				35D41FFA194879E2F35BD105 /* Pods-JCLiveVideo.release.xcconfig */,
+			);
+			name = Pods;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -153,9 +179,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 0DACD7DF1D1E274800C212A5 /* Build configuration list for PBXNativeTarget "JCLiveVideo" */;
 			buildPhases = (
+				64D855AB62C6A7D7BEDD161F /* [CP] Check Pods Manifest.lock */,
 				0DACD7C41D1E274800C212A5 /* Sources */,
 				0DACD7C51D1E274800C212A5 /* Frameworks */,
 				0DACD7C61D1E274800C212A5 /* Resources */,
+				5A66EDCED5D3AD224B0752E6 /* [CP] Embed Pods Frameworks */,
+				31FA65D6372D8F2B01068EB4 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -211,6 +240,54 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		31FA65D6372D8F2B01068EB4 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-JCLiveVideo/Pods-JCLiveVideo-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		5A66EDCED5D3AD224B0752E6 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-JCLiveVideo/Pods-JCLiveVideo-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		64D855AB62C6A7D7BEDD161F /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		0DACD7C41D1E274800C212A5 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -219,8 +296,10 @@
 				0DACD7D31D1E274800C212A5 /* ViewController.m in Sources */,
 				0DACD7D01D1E274800C212A5 /* AppDelegate.m in Sources */,
 				0DFA53F11D1EDE9D004CFF11 /* JCAudioCapture.m in Sources */,
+				396151BA1D20F88C009B40FC /* JCAACEncoder.m in Sources */,
 				0D65BC851D1E41E3005F13FB /* JCH264Encoder.m in Sources */,
 				0DACD7CD1D1E274800C212A5 /* main.m in Sources */,
+				396151B71D20C6D1009B40FC /* AudioCaptureViewController.m in Sources */,
 				0DACD7E71D1E27B400C212A5 /* JCVideoCapture.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -331,6 +410,7 @@
 		};
 		0DACD7E01D1E274800C212A5 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 34819DEA12095F06C0F4DBAF /* Pods-JCLiveVideo.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				INFOPLIST_FILE = JCLiveVideo/Info.plist;
@@ -343,6 +423,7 @@
 		};
 		0DACD7E11D1E274800C212A5 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 35D41FFA194879E2F35BD105 /* Pods-JCLiveVideo.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				INFOPLIST_FILE = JCLiveVideo/Info.plist;

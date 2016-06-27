@@ -79,10 +79,6 @@
     // Dispose of any resources that can be recreated.
 }
 
-- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
-    NSLog(@"%d", fromInterfaceOrientation);
-}
-
 #pragma mark event
 
 - (IBAction)onSwitch:(id)sender {

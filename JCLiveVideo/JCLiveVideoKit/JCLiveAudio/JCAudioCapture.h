@@ -9,6 +9,15 @@
 #import <AVFoundation/AVFoundation.h>
 #import <AudioToolbox/AudioToolbox.h>
 
+
+typedef void(^audioCaptureOriginDataBlock)(AudioBufferList audioBufferList);
+
 @interface JCAudioCapture : NSObject
+
+- (void)startRunning;
+- (void)stopRunning;
+
+//获取原始音频流
+- (void)audioCaptureOriginBlock:(audioCaptureOriginDataBlock)audioCaptureOriginBlock;
 
 @end
