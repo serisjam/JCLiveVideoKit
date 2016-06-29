@@ -12,6 +12,7 @@
 
 @property (nonatomic, assign) uint64_t timestamp;
 
-
+@property (nonatomic, strong) NSData *audioInfo;
+@property (nonatomic, strong) NSData *contentData;
 
 @end

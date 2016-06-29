@@ -26,6 +26,8 @@
 		396151BA1D20F88C009B40FC /* JCAACEncoder.m in Sources */ = {isa = PBXBuildFile; fileRef = 396151B91D20F88C009B40FC /* JCAACEncoder.m */; };
 		39CE04B51D239EAE00C20D74 /* JCFLVVideoFrame.m in Sources */ = {isa = PBXBuildFile; fileRef = 39CE04B41D239EAE00C20D74 /* JCFLVVideoFrame.m */; };
 		39CE04B81D239EBE00C20D74 /* JCFLVAudioFrame.m in Sources */ = {isa = PBXBuildFile; fileRef = 39CE04B71D239EBE00C20D74 /* JCFLVAudioFrame.m */; };
+		39CE04BB1D23C4DB00C20D74 /* JCRtmp.m in Sources */ = {isa = PBXBuildFile; fileRef = 39CE04BA1D23C4DB00C20D74 /* JCRtmp.m */; };
+		39CE04BE1D23CA3B00C20D74 /* JCRtmpFrameBuffer.m in Sources */ = {isa = PBXBuildFile; fileRef = 39CE04BD1D23CA3B00C20D74 /* JCRtmpFrameBuffer.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -61,6 +63,10 @@
 		39CE04B41D239EAE00C20D74 /* JCFLVVideoFrame.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JCFLVVideoFrame.m; sourceTree = "<group>"; };
 		39CE04B61D239EBE00C20D74 /* JCFLVAudioFrame.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JCFLVAudioFrame.h; sourceTree = "<group>"; };
 		39CE04B71D239EBE00C20D74 /* JCFLVAudioFrame.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JCFLVAudioFrame.m; sourceTree = "<group>"; };
+		39CE04B91D23C4DB00C20D74 /* JCRtmp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JCRtmp.h; sourceTree = "<group>"; };
+		39CE04BA1D23C4DB00C20D74 /* JCRtmp.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JCRtmp.m; sourceTree = "<group>"; };
+		39CE04BC1D23CA3B00C20D74 /* JCRtmpFrameBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JCRtmpFrameBuffer.h; sourceTree = "<group>"; };
+		39CE04BD1D23CA3B00C20D74 /* JCRtmpFrameBuffer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JCRtmpFrameBuffer.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -186,6 +192,10 @@
 		39370C921D213177001075DE /* rtmp */ = {
 			isa = PBXGroup;
 			children = (
+				39CE04BC1D23CA3B00C20D74 /* JCRtmpFrameBuffer.h */,
+				39CE04BD1D23CA3B00C20D74 /* JCRtmpFrameBuffer.m */,
+				39CE04B91D23C4DB00C20D74 /* JCRtmp.h */,
+				39CE04BA1D23C4DB00C20D74 /* JCRtmp.m */,
 			);
 			path = rtmp;
 			sourceTree = "<group>";
@@ -314,6 +324,7 @@
 				0DACD7D31D1E274800C212A5 /* ViewController.m in Sources */,
 				0DACD7D01D1E274800C212A5 /* AppDelegate.m in Sources */,
 				0DFA53F11D1EDE9D004CFF11 /* JCAudioCapture.m in Sources */,
+				39CE04BE1D23CA3B00C20D74 /* JCRtmpFrameBuffer.m in Sources */,
 				396151BA1D20F88C009B40FC /* JCAACEncoder.m in Sources */,
 				0D65BC851D1E41E3005F13FB /* JCH264Encoder.m in Sources */,
 				0DACD7CD1D1E274800C212A5 /* main.m in Sources */,
@@ -321,6 +332,7 @@
 				396151B71D20C6D1009B40FC /* AudioCaptureViewController.m in Sources */,
 				39CE04B51D239EAE00C20D74 /* JCFLVVideoFrame.m in Sources */,
 				0DACD7E71D1E27B400C212A5 /* JCVideoCapture.m in Sources */,
+				39CE04BB1D23C4DB00C20D74 /* JCRtmp.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
