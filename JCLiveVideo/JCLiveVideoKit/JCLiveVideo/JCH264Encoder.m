@@ -62,89 +62,89 @@
         case JCLiveVideoQuality_Low1: {
             self.width = 360;
             self.height = 480;
-            self.videoFrameRate = 24;
-            self.videoMaxFrameRate = 24;
+            self.videoFrameRate = 15;
+            self.videoMaxFrameRate = 20;
             self.videoMinFrameRate = 12;
-            self.videoBitRate = 800 * 1024;
-            self.videoMaxBitRate = 900 * 1024;
-            self.videoMinBitRate = 500 * 1024;
+            self.videoBitRate = 500 * 1024;
+            self.videoMaxBitRate = 600 * 1024;
+            self.videoMinBitRate = 400 * 1024;
         }
             break;
         case JCLiveVideoQuality_Low2: {
             self.width = 360;
             self.height = 480;
-            self.videoFrameRate = 30;
+            self.videoFrameRate = 24;
             self.videoMaxFrameRate = 30;
             self.videoMinFrameRate = 15;
-            self.videoBitRate = 800 * 1024;
-            self.videoMaxBitRate = 900 * 1024;
-            self.videoMinBitRate = 500 * 1024;
+            self.videoBitRate = 500 * 1024;
+            self.videoMaxBitRate = 600 * 1024;
+            self.videoMinBitRate = 400 * 1024;
         }
             break;
         case JCLiveVideoQuality_Medium1: {
             self.width = 480;
             self.height = 640;
-            self.videoFrameRate = 24;
-            self.videoMaxFrameRate = 24;
+            self.videoFrameRate = 15;
+            self.videoMaxFrameRate = 20;
             self.videoMinFrameRate = 12;
-            self.videoBitRate = 800 * 1024;
-            self.videoMaxBitRate = 900 * 1024;
+            self.videoBitRate = 600 * 1024;
+            self.videoMaxBitRate = 700 * 1024;
             self.videoMinBitRate = 500 * 1024;
         }
             break;
         case JCLiveVideoQuality_Medium2: {
             self.width = 480;
             self.height = 640;
-            self.videoFrameRate = 30;
-            self.videoMaxFrameRate = 30;
+            self.videoFrameRate = 24;
+            self.videoMaxFrameRate = 24;
             self.videoMinFrameRate = 15;
-            self.videoBitRate = 1000 * 1024;
-            self.videoMaxBitRate = 1200 * 1024;
+            self.videoBitRate = 800 * 1024;
+            self.videoMaxBitRate = 900 * 1024;
             self.videoMinBitRate = 700 * 1024;
         }
             break;
         case JCLiveVideoQuality_High1: {
-            self.width = 720;
-            self.height = 1280;
-            self.videoFrameRate = 24;
-            self.videoMaxFrameRate = 24;
+            self.width = 540;
+            self.height = 960;
+            self.videoFrameRate = 15;
+            self.videoMaxFrameRate = 20;
             self.videoMinFrameRate = 12;
-            self.videoBitRate = 1200 * 1024;
-            self.videoMaxBitRate = 1300 * 1024;
+            self.videoBitRate = 1000 * 1024;
+            self.videoMaxBitRate = 1100 * 1024;
             self.videoMinBitRate = 800 * 1024;
             
         }
             break;
         case JCLiveVideoQuality_High2: {
-            self.width = 720;
-            self.height = 1280;
-            self.videoFrameRate = 30;
+            self.width = 540;
+            self.height = 960;
+            self.videoFrameRate = 24;
             self.videoMaxFrameRate = 30;
             self.videoMinFrameRate = 15;
-            self.videoBitRate = 1200 * 1024;
-            self.videoMaxBitRate = 1300 * 1024;
+            self.videoBitRate = 1000 * 1024;
+            self.videoMaxBitRate = 1100 * 1024;
             self.videoMinBitRate = 800 * 1024;
         }
             break;
         case JCLiveVideoQuality_Best1: {
-            self.width = 1080;
-            self.height = 1920;
-            self.videoFrameRate = 24;
-            self.videoMaxFrameRate = 24;
+            self.width = 720;
+            self.height = 1280;
+            self.videoFrameRate = 15;
+            self.videoMaxFrameRate = 20;
             self.videoMinFrameRate = 12;
-            self.videoBitRate = 1200 * 1024;
-            self.videoMaxBitRate = 1300 * 1024;
+            self.videoBitRate = 1000 * 1024;
+            self.videoMaxBitRate = 1100 * 1024;
             self.videoMinBitRate = 800 * 1024;
         }
             break;
         case JCLiveVideoQuality_Best2: {
-            self.width = 1080;
-            self.height = 1920;
-            self.videoFrameRate = 30;
+            self.width = 720;
+            self.height = 1280;
+            self.videoFrameRate = 24;
             self.videoMaxFrameRate = 30;
             self.videoMinFrameRate = 15;
-            self.videoBitRate = 1400 * 1024;
-            self.videoMaxBitRate = 1500 * 1024;
+            self.videoBitRate = 1200 * 1024;
+            self.videoMaxBitRate = 1400 * 1024;
             self.videoMinBitRate = 1000 * 1024;
         }
             break;
@@ -307,6 +307,7 @@ static void VideoCompressonOutputCallback(void *outputCallbackRefCon, void *sour
     JCH264Encoder* encoder = (__bridge JCH264Encoder*)outputCallbackRefCon;
     
     BOOL isKeyFrame = !CFDictionaryContainsKey(dic, kCMSampleAttachmentKey_NotSync);
+    uint64_t timeStamp = [((__bridge_transfer NSNumber*)sourceFrameRefCon) longLongValue];
     
     if (isKeyFrame) {
         CMFormatDescriptionRef formatDesc = CMSampleBufferGetFormatDescription(sampleBuffer);
@@ -324,10 +325,6 @@ static void VideoCompressonOutputCallback(void *outputCallbackRefCon, void *sour
             if (statusCode == noErr) {
                 encoder.sps = [NSData dataWithBytes:sparameterSet length:sparameterSetSize];
                 encoder.pps = [NSData dataWithBytes:pparameterSet length:pparameterSetSize];
-                
-                if ([encoder.delegate respondsToSelector:@selector(getSpsData:withPpsData:)]) {
-                    [encoder.delegate getSpsData:encoder.sps withPpsData:encoder.pps];
-                }
             }
         }
     }
@@ -354,8 +351,12 @@ static void VideoCompressonOutputCallback(void *outputCallbackRefCon, void *sour
             
             NSData *data = [[NSData alloc] initWithBytes:dataPointer+bufferOffset+AVCCHeaderLength length:NALUnitLength];
             
-            if ([encoder.delegate respondsToSelector:@selector(getEncodedData:isKeyFrame:)]) {
-                [encoder.delegate getEncodedData:data isKeyFrame:isKeyFrame];
+            JCFLVVideoFrame *videoFrame = [[JCFLVVideoFrame alloc] initWithSpsData:encoder.sps withPPSData:encoder.pps andBodyData:data];
+            [videoFrame setIsKeyFrame:isKeyFrame];
+            [videoFrame setTimestamp:timeStamp];
+            
+            if ([encoder.delegate respondsToSelector:@selector(getEncoder:withVideoFrame:)]) {
+                [encoder.delegate getEncoder:encoder withVideoFrame:videoFrame];
             }
             
             bufferOffset += AVCCHeaderLength + NALUnitLength;

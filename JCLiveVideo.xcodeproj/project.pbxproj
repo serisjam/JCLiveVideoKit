@@ -24,6 +24,8 @@
 		1652A2D72F134F7B52B99F9A /* libPods-JCLiveVideo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 34FB9414F82AACFE2409E85B /* libPods-JCLiveVideo.a */; };
 		396151B71D20C6D1009B40FC /* AudioCaptureViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 396151B61D20C6D1009B40FC /* AudioCaptureViewController.m */; };
 		396151BA1D20F88C009B40FC /* JCAACEncoder.m in Sources */ = {isa = PBXBuildFile; fileRef = 396151B91D20F88C009B40FC /* JCAACEncoder.m */; };
+		39CE04B51D239EAE00C20D74 /* JCFLVVideoFrame.m in Sources */ = {isa = PBXBuildFile; fileRef = 39CE04B41D239EAE00C20D74 /* JCFLVVideoFrame.m */; };
+		39CE04B81D239EBE00C20D74 /* JCFLVAudioFrame.m in Sources */ = {isa = PBXBuildFile; fileRef = 39CE04B71D239EBE00C20D74 /* JCFLVAudioFrame.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -55,6 +57,10 @@
 		396151B61D20C6D1009B40FC /* AudioCaptureViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AudioCaptureViewController.m; sourceTree = "<group>"; };
 		396151B81D20F88C009B40FC /* JCAACEncoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JCAACEncoder.h; sourceTree = "<group>"; };
 		396151B91D20F88C009B40FC /* JCAACEncoder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JCAACEncoder.m; sourceTree = "<group>"; };
+		39CE04B31D239EAE00C20D74 /* JCFLVVideoFrame.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JCFLVVideoFrame.h; sourceTree = "<group>"; };
+		39CE04B41D239EAE00C20D74 /* JCFLVVideoFrame.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JCFLVVideoFrame.m; sourceTree = "<group>"; };
+		39CE04B61D239EBE00C20D74 /* JCFLVAudioFrame.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JCFLVAudioFrame.h; sourceTree = "<group>"; };
+		39CE04B71D239EBE00C20D74 /* JCFLVAudioFrame.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JCFLVAudioFrame.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -132,6 +138,8 @@
 		0DACD7E31D1E279000C212A5 /* JCLiveAudio */ = {
 			isa = PBXGroup;
 			children = (
+				39CE04B61D239EBE00C20D74 /* JCFLVAudioFrame.h */,
+				39CE04B71D239EBE00C20D74 /* JCFLVAudioFrame.m */,
 				396151B81D20F88C009B40FC /* JCAACEncoder.h */,
 				396151B91D20F88C009B40FC /* JCAACEncoder.m */,
 				0DFA53EF1D1EDE9D004CFF11 /* JCAudioCapture.h */,
@@ -143,6 +151,8 @@
 		0DACD7E41D1E279000C212A5 /* JCLiveVideo */ = {
 			isa = PBXGroup;
 			children = (
+				39CE04B31D239EAE00C20D74 /* JCFLVVideoFrame.h */,
+				39CE04B41D239EAE00C20D74 /* JCFLVVideoFrame.m */,
 				0D65BC831D1E41E3005F13FB /* JCH264Encoder.h */,
 				0D65BC841D1E41E3005F13FB /* JCH264Encoder.m */,
 				0DACD7E51D1E27B400C212A5 /* JCVideoCapture.h */,
@@ -307,7 +317,9 @@
 				396151BA1D20F88C009B40FC /* JCAACEncoder.m in Sources */,
 				0D65BC851D1E41E3005F13FB /* JCH264Encoder.m in Sources */,
 				0DACD7CD1D1E274800C212A5 /* main.m in Sources */,
+				39CE04B81D239EBE00C20D74 /* JCFLVAudioFrame.m in Sources */,
 				396151B71D20C6D1009B40FC /* AudioCaptureViewController.m in Sources */,
+				39CE04B51D239EAE00C20D74 /* JCFLVVideoFrame.m in Sources */,
 				0DACD7E71D1E27B400C212A5 /* JCVideoCapture.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

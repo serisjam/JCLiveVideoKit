@@ -36,6 +36,10 @@
 @property (nonatomic, strong) NSFileHandle *h264FileHandle;
 @property (nonatomic, strong) NSFileHandle *aacFileHandle;
 
+@property (nonatomic, assign) BOOL sendVideoHead;
+
+@property (nonatomic, assign) RTMPError error;
+
 @end
 
 @implementation ViewController
@@ -44,6 +48,8 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
     _videoCapture = [[JCVideoCapture alloc] init];
+    
+    self.sendVideoHead = NO;
     
     //打开文件句柄, 记录h264文件
     NSFileManager *fileManager = [NSFileManager defaultManager];
@@ -70,23 +76,6 @@
     self.audioEncoder = [[JCAACEncoder alloc] init];
     [self.audioEncoder setDelegate:self];
     
-    //rtmp推流
-    _rtmp = PILI_RTMP_Alloc();
-    PILI_RTMP_Init(_rtmp);
-    
-    NSString *rtmpStringURL = @"rtmp://192.168.10.253:1935/5showcam/stream111111";
-    PILI_RTMP_SetupURL(_rtmp, (char *)[rtmpStringURL cStringUsingEncoding:NSASCIIStringEncoding], NULL);
-    
-    //设置为发布流
-    PILI_RTMP_EnableWrite(_rtmp);
-    _rtmp->Link.timeout = 2;
-    
-    //链接服务器
-    PILI_RTMP_Connect(_rtmp, NULL, NULL);
-    
-    //链接流
-    PILI_RTMP_ConnectStream(_rtmp, 0, NULL);
-    
 }
 
 - (void)viewDidLayoutSubviews {
@@ -97,6 +86,45 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
+    
+    dispatch_queue_t queue = dispatch_queue_create("com.youku.LaiFeng.live.socketQueue", NULL);
+    
+    //rtmp推流
+    dispatch_async(queue, ^{
+        if(_rtmp != NULL){
+            PILI_RTMP_Close(_rtmp, &_error);
+            PILI_RTMP_Free(_rtmp);
+            _sendVideoHead = NO;
+        }
+        
+        _rtmp = PILI_RTMP_Alloc();
+        PILI_RTMP_Init(_rtmp);
+        
+        NSString *rtmpStringURL = @"rtmp://192.168.10.253:1935/5showcam/stream111111";
+        if ( PILI_RTMP_SetupURL(_rtmp, (char *)[rtmpStringURL cStringUsingEncoding:NSASCIIStringEncoding], &_error) < 0) {
+            PILI_RTMP_Close(_rtmp, &_error);
+            PILI_RTMP_Free(_rtmp);
+            _sendVideoHead = NO;
+        }
+        
+        //设置为发布流
+        PILI_RTMP_EnableWrite(_rtmp);
+        _rtmp->Link.timeout = 4;
+        
+        //链接服务器
+        if (PILI_RTMP_Connect(_rtmp, NULL, &_error) < 0){
+            PILI_RTMP_Close(_rtmp, &_error);
+            PILI_RTMP_Free(_rtmp);
+            _sendVideoHead = NO;
+        }
+        
+        //链接流
+        if (PILI_RTMP_ConnectStream(_rtmp, 0, &_error) < 0) {
+            PILI_RTMP_Close(_rtmp, &_error);
+            PILI_RTMP_Free(_rtmp);
+            _sendVideoHead = NO;
+        }
+    });
     
     __weak typeof(self) weakSelf = self;
     [_videoCapture carmeraScanOriginBlock:^(CMSampleBufferRef sampleBufferRef){
@@ -145,6 +173,18 @@
 
 #pragma mark JCH264EncoderDelegate
 
+- (void)getEncoder:(JCH264Encoder *)encoder withVideoFrame:(JCFLVVideoFrame *)videoFrame {
+    if (!self.sendVideoHead) {
+        self.sendVideoHead = YES;
+        unsigned char *header = [videoFrame getHeaderData];
+        [self sendPacket:RTMP_PACKET_TYPE_VIDEO data:header size:videoFrame.headerLength nTimestamp:0];
+    } else {
+        unsigned char *data = [videoFrame getBodyData];
+        [self sendPacket:RTMP_PACKET_TYPE_VIDEO data:data size:videoFrame.bodyLength nTimestamp:videoFrame.timestamp];
+    }
+    
+}
+
 - (void)getEncodedData:(NSData *)data isKeyFrame:(BOOL)isKeyFrame {
     
     if (self.h264FileHandle != NULL) {
@@ -185,6 +225,38 @@
     OSSpinLockUnlock(&lock);
     
     return currentts;
+}
+
+-(NSInteger) sendPacket:(unsigned int)nPacketType data:(unsigned char *)data size:(NSInteger) size nTimestamp:(uint64_t) nTimestamp{
+    NSInteger rtmpLength = size;
+    PILI_RTMPPacket rtmp_pack;
+    PILI_RTMPPacket_Reset(&rtmp_pack);
+    PILI_RTMPPacket_Alloc(&rtmp_pack,(uint32_t)rtmpLength);
+    
+    rtmp_pack.m_nBodySize = (uint32_t)size;
+    memcpy(rtmp_pack.m_body,data,size);
+    rtmp_pack.m_hasAbsTimestamp = 0;
+    rtmp_pack.m_packetType = nPacketType;
+    if(_rtmp) rtmp_pack.m_nInfoField2 = _rtmp->m_stream_id;
+    rtmp_pack.m_nChannel = 0x04;
+    rtmp_pack.m_headerType = RTMP_PACKET_SIZE_LARGE;
+    if (RTMP_PACKET_TYPE_AUDIO == nPacketType && size !=4){
+        rtmp_pack.m_headerType = RTMP_PACKET_SIZE_MEDIUM;
+    }
+    rtmp_pack.m_nTimeStamp = (uint32_t)nTimestamp;
+    
+    NSInteger nRet = [self RtmpPacketSend:&rtmp_pack];
+    
+    PILI_RTMPPacket_Free(&rtmp_pack);
+    return nRet;
+}
+
+- (NSInteger)RtmpPacketSend:(PILI_RTMPPacket*)packet{
+    if (PILI_RTMP_IsConnected(_rtmp)){
+        int success = PILI_RTMP_SendPacket(_rtmp,packet,0,&_error);
+        return success;
+    }
+    return -1;
 }
 
 @end

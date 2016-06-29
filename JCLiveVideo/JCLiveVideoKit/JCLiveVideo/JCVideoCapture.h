@@ -13,8 +13,8 @@
 typedef NS_ENUM(NSUInteger, JCCaptureVideoQuality) {
     JCCaptureVideo480x360,
     JCCaptureVideo640x480,
-    JCCaptureVideo1280x720,
-    JCCaptureVideo1920x1080
+    JCCaptureVideo960x540,
+    JCCaptureVideo1280x720
 };
 
 //摄像头位置

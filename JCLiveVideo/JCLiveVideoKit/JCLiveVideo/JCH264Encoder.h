@@ -9,32 +9,35 @@
 #import <UIKit/UIKit.h>
 #import <VideoToolbox/VideoToolbox.h>
 
+#import "JCFLVVideoFrame.h"
+
 /// 视频质量
 typedef NS_ENUM(NSUInteger, JCLiveVideoQuality){
-    /// 分辨率： 480x360 帧数：24 码率：800Kps
+    /// 分辨率： 480x360 帧数：15 码率：500Kps
     JCLiveVideoQuality_Low1 = 0,
-    /// 分辨率： 480x360 帧数：30 码率：800Kps
+    /// 分辨率： 480x360 帧数：24 码率：500Kps
     JCLiveVideoQuality_Low2 = 1,
-    /// 分辨率： 640x480 帧数：24 码率：800Kps
+    /// 分辨率： 640x480 帧数：15 码率：500Kps
     JCLiveVideoQuality_Medium1 = 2,
-    /// 分辨率： 640x480 帧数：30 码率：800Kps
+    /// 分辨率： 640x480 帧数：24 码率：600Kps
     JCLiveVideoQuality_Medium2 = 3,
-    /// 分辨率： 1280x720 帧数：24 码率：1000Kps
+    /// 分辨率： 960x540 帧数：15 码率：800Kps
     JCLiveVideoQuality_High1 = 4,
-    /// 分辨率： 1280x720 帧数：30 码率：1200Kps
+    /// 分辨率： 960x540 帧数：24 码率：1000Kps
     JCLiveVideoQuality_High2 = 5,
-    /// 分辨率： 1920x1080 帧数：24 码率：1200Kps
+    /// 分辨率： 1280x720 帧数：15 码率：1000Kps
     JCLiveVideoQuality_Best1 = 6,
-    /// 分辨率： 1920x1080 帧数：30 码率：1400Kps
+    /// 分辨率： 1280x720 帧数：24 码率：1200Kps
     JCLiveVideoQuality_Best2 = 7,
     /// 默认配置
-    JCLiveVideoQuality_Default = JCLiveVideoQuality_High1
+    JCLiveVideoQuality_Default = JCLiveVideoQuality_Low1
 };
+
+@class JCH264Encoder;
 
 @protocol JCH264EncoderDelegate <NSObject>
 
-- (void)getSpsData:(NSData *)spsData withPpsData:(NSData *)ppsData;
-- (void)getEncodedData:(NSData *)data isKeyFrame:(BOOL)isKeyFrame;
+- (void)getEncoder:(JCH264Encoder *)encoder withVideoFrame:(JCFLVVideoFrame *)videoFrame;
 
 @end
 
@@ -46,7 +49,6 @@ typedef NS_ENUM(NSUInteger, JCLiveVideoQuality){
 - (instancetype)initWithJCLiveVideoQuality:(JCLiveVideoQuality)liveVideoQuality;
 
 - (void)changeJCLiveVideoQuality:(JCLiveVideoQuality)liveVideoQuality;
-- (void)changeJCLiveVideoOrientation:(UIInterfaceOrientation)fromInterfaceOrientation;
 
 - (void)encodeVideoData:(CMSampleBufferRef)pixelBuffer timeStamp:(uint64_t)timeStamp;
 

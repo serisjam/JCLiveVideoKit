@@ -44,11 +44,11 @@
         case JCCaptureVideo640x480:
             self.captureSessionPreset = AVCaptureSessionPreset640x480;
             break;
+        case JCCaptureVideo960x540:
+            self.captureSessionPreset = AVCaptureSessionPresetiFrame960x540;
+            break;
         case JCCaptureVideo1280x720:
             self.captureSessionPreset = AVCaptureSessionPreset1280x720;
-            break;
-        case JCCaptureVideo1920x1080:
-            self.captureSessionPreset = AVCaptureSessionPreset1920x1080;
             break;
         default:
             break;
