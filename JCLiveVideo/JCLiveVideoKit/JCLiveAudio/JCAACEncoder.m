@@ -77,12 +77,12 @@
     inputFormat.mBytesPerFrame = inputFormat.mBitsPerChannel / 8 * inputFormat.mChannelsPerFrame;
     inputFormat.mBytesPerPacket = inputFormat.mBytesPerFrame * inputFormat.mFramesPerPacket;
     
-    AudioStreamBasicDescription outputFormat; // 这里开始是输出音频格式
+    AudioStreamBasicDescription outputFormat; //这里开始是输出音频格式
     memset(&outputFormat, 0, sizeof(outputFormat));
-    outputFormat.mSampleRate       = inputFormat.mSampleRate; // 采样率保持一致
-    outputFormat.mFormatID         = kAudioFormatMPEG4AAC;    // AAC编码 kAudioFormatMPEG4AAC kAudioFormatMPEG4AAC_HE_V2
+    outputFormat.mSampleRate       = inputFormat.mSampleRate; //采样率保持一致
+    outputFormat.mFormatID         = kAudioFormatMPEG4AAC;    //AAC编码 kAudioFormatMPEG4AAC kAudioFormatMPEG4AAC_HE_V2
     outputFormat.mChannelsPerFrame = 2;
-    outputFormat.mFramesPerPacket  = 1024;                    // AAC一帧是1024个字节
+    outputFormat.mFramesPerPacket  = 1024;                    //AAC一帧是1024个字节
     
     const OSType subtype = kAudioFormatMPEG4AAC;
     AudioClassDescription requestedCodecs[2] = {
@@ -125,8 +125,7 @@ OSStatus inputDataProc(AudioConverterRef inConverter, UInt32 *ioNumberDataPacket
  *  See: http://wiki.multimedia.cx/index.php?title=ADTS
  *  Also: http://wiki.multimedia.cx/index.php?title=MPEG-4_Audio#Channel_Configurations
  **/
-- (NSData *)adtsDataForPacketLength:(NSUInteger)packetLength
-{
+- (NSData *)adtsDataForPacketLength:(NSUInteger)packetLength {
     int adtsLength = 7;
     char *packet = malloc(sizeof(char) * adtsLength);
     // Variables Recycled by addADTStoPacket

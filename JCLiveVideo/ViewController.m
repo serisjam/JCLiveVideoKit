@@ -13,18 +13,28 @@
 #import "JCVideoCapture.h"
 #import "JCH264Encoder.h"
 
+#import "JCAudioCapture.h"
+#import "JCAACEncoder.h"
+
+#import "rtmp.h"
+
 /**  时间戳 */
 #define NOW (CACurrentMediaTime()*1000)
 
-@interface ViewController () <JCH264EncoderDelegate>
+@interface ViewController () <JCH264EncoderDelegate, JAACEncoderDelegate> {
+   PILI_RTMP* _rtmp;
+}
 
 @property (nonatomic, strong) JCVideoCapture *videoCapture;
-
 @property (nonatomic, strong) JCH264Encoder *jcH264Encoder;
+
+@property (nonatomic, strong) JCAudioCapture *audioCapture;
+@property (nonatomic, strong) JCAACEncoder *audioEncoder;
 
 @property (nonatomic, assign) uint64_t timestamp;
 
 @property (nonatomic, strong) NSFileHandle *h264FileHandle;
+@property (nonatomic, strong) NSFileHandle *aacFileHandle;
 
 @end
 
@@ -46,9 +56,37 @@
     
     self.h264FileHandle = [NSFileHandle fileHandleForWritingAtPath:h264File];
     
+    NSString *aacFile = [documentsDirectory stringByAppendingPathComponent:@"test.aac"];
+    [fileManager removeItemAtPath:aacFile error:nil];
+    [fileManager createFileAtPath:aacFile contents:nil attributes:nil];
+    
+    self.aacFileHandle = [NSFileHandle fileHandleForWritingAtPath:aacFile];
+    
+    
     self.jcH264Encoder = [[JCH264Encoder alloc] initWithJCLiveVideoQuality:JCLiveVideoQuality_Medium1];
     [self.jcH264Encoder setDelegate:self];
-
+    
+    self.audioCapture = [[JCAudioCapture alloc] init];
+    self.audioEncoder = [[JCAACEncoder alloc] init];
+    [self.audioEncoder setDelegate:self];
+    
+    //rtmp推流
+    _rtmp = PILI_RTMP_Alloc();
+    PILI_RTMP_Init(_rtmp);
+    
+    NSString *rtmpStringURL = @"rtmp://192.168.10.253:1935/5showcam/stream111111";
+    PILI_RTMP_SetupURL(_rtmp, (char *)[rtmpStringURL cStringUsingEncoding:NSASCIIStringEncoding], NULL);
+    
+    //设置为发布流
+    PILI_RTMP_EnableWrite(_rtmp);
+    _rtmp->Link.timeout = 2;
+    
+    //链接服务器
+    PILI_RTMP_Connect(_rtmp, NULL, NULL);
+    
+    //链接流
+    PILI_RTMP_ConnectStream(_rtmp, 0, NULL);
+    
 }
 
 - (void)viewDidLayoutSubviews {
@@ -65,7 +103,12 @@
         [weakSelf.jcH264Encoder encodeVideoData:sampleBufferRef timeStamp:[weakSelf currentTimestamp]];
     }];
     
+    [self.audioCapture audioCaptureOriginBlock:^(AudioBufferList audioBufferList){
+        [weakSelf.audioEncoder encodeAudioData:audioBufferList timeStamp:[weakSelf currentTimestamp]];
+    }];
+    
     [_videoCapture startRunning];
+    [self.audioCapture startRunning];
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
@@ -86,7 +129,18 @@
     
     [_videoCapture stopRunning];
     [self.jcH264Encoder endVideoCompression];
+    
+    [_audioCapture stopRunning];
+    
     [self.h264FileHandle closeFile];
+    [self.aacFileHandle closeFile];
+}
+
+#pragma mark JCACCEncoderDelegate
+
+- (void)getRawAACData:(NSData *)aacData withADTSHeaderData:(NSData *)adtsHeaderData {
+    [self.aacFileHandle writeData:adtsHeaderData];
+    [self.aacFileHandle writeData:aacData];
 }
 
 #pragma mark JCH264EncoderDelegate
