@@ -307,6 +307,7 @@ static void VideoCompressonOutputCallback(void *outputCallbackRefCon, void *sour
     JCH264Encoder* encoder = (__bridge JCH264Encoder*)outputCallbackRefCon;
     
     BOOL isKeyFrame = !CFDictionaryContainsKey(dic, kCMSampleAttachmentKey_NotSync);
+    
     uint64_t timeStamp = [((__bridge_transfer NSNumber*)sourceFrameRefCon) longLongValue];
     
     if (isKeyFrame) {
@@ -354,7 +355,7 @@ static void VideoCompressonOutputCallback(void *outputCallbackRefCon, void *sour
             JCFLVVideoFrame *videoFrame = [[JCFLVVideoFrame alloc] initWithSpsData:encoder.sps withPPSData:encoder.pps andBodyData:data];
             [videoFrame setIsKeyFrame:isKeyFrame];
             [videoFrame setTimestamp:timeStamp];
-            
+
             if ([encoder.delegate respondsToSelector:@selector(getEncoder:withVideoFrame:)]) {
                 [encoder.delegate getEncoder:encoder withVideoFrame:videoFrame];
             }
