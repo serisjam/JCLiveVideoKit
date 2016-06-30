@@ -332,6 +332,7 @@ static void VideoCompressonOutputCallback(void *outputCallbackRefCon, void *sour
             NALUnitLength = CFSwapInt32BigToHost(NALUnitLength);
             
             JCFLVVideoFrame *videoFrame = [JCFLVVideoFrame new];
+            videoFrame.data = [[NSData alloc] initWithBytes:(dataPointer + bufferOffset + AVCCHeaderLength) length:NALUnitLength];
             videoFrame.isKeyFrame = isKeyFrame;
             videoFrame.timestamp = timeStamp;
             videoFrame.sps = encoder.sps;

@@ -15,6 +15,7 @@
 @property (nonatomic, assign) BOOL isKeyFrame;
 @property (nonatomic, strong) NSData *sps;
 @property (nonatomic, strong) NSData *pps;
+@property (nonatomic, strong) NSData *data;
 
 ////flv格式tag header长度
 //@property (nonatomic, assign, readonly) NSInteger headerLength;
