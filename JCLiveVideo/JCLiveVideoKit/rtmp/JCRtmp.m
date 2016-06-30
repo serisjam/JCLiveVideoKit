@@ -9,6 +9,8 @@
 #import "JCRtmp.h"
 #import "rtmp.h"
 
+#import "JCRtmpFrameBuffer.h"
+
 @interface JCRtmp () {
     PILI_RTMP *_rtmp;
 }
@@ -98,37 +100,6 @@
     });
 }
 
-- (void)connect {
-    dispatch_async(self.rtmpQueque, ^{
-        if (_rtmp != NULL) {
-            [self cleanAll];
-        }
-        
-        //创建rtmp
-        _rtmp = PILI_RTMP_Alloc();
-        PILI_RTMP_Init(_rtmp);
-        
-        //设置为发布流
-        PILI_RTMP_EnableWrite(_rtmp);
-        _rtmp->Link.timeout = 2;
-        
-        //连接服务器
-        if (PILI_RTMP_Connect(_rtmp, NULL, NULL) < 0) {
-            [self cleanAll];
-        }
-        
-        //链接流
-        if (PILI_RTMP_ConnectStream(_rtmp, 0, NULL) < 0) {
-            [self cleanAll];
-        }
-        
-    });
-}
-
-- (void)disConnect {
-    [self cleanAll];
-}
-
 #pragma mark private method
 
 - (void)cleanAll {
@@ -137,6 +108,72 @@
     PILI_RTMP_Free(_rtmp);
     //防止野指针
     _rtmp = NULL;
+    
+    self.isVideoHeader = NO;
+}
+
+- (void)callBackFailed {
+    if ([self.delegate respondsToSelector:@selector(JCRtmp:withJCRtmpConnectStatus:)]) {
+        [self.delegate JCRtmp:self withJCRtmpConnectStatus:JCLiveStatusFailed];
+    }
+}
+
+- (void)sendFrameData {
+    if (!_rtmp || [_frameBuffer getCount] <= 0) {
+        return ;
+    }
+    
+    JCFLVVideoFrame *videoFrame = [_frameBuffer getFirstVideoFrame];
+    
+    if (videoFrame == nil) {
+        return;
+    }
+    
+    if (!_isVideoHeader) {
+        _isVideoHeader = YES;
+        unsigned char *videoHeaderData = [videoFrame getHeaderData];
+        [self sendPacket:RTMP_PACKET_TYPE_VIDEO data:videoHeaderData size:videoFrame.headerLength nTimestamp:videoFrame.timestamp];
+        free(videoHeaderData);
+    } else {
+        unsigned char *videoBodyData = [videoFrame getBodyData];
+        [self sendPacket:RTMP_PACKET_TYPE_VIDEO data:videoBodyData size:videoFrame.bodyLength nTimestamp:videoFrame.timestamp];
+        free(videoBodyData);
+    }
+}
+
+-(NSInteger) sendPacket:(unsigned int)nPacketType data:(unsigned char *)data size:(NSInteger) size nTimestamp:(uint64_t) nTimestamp{
+    NSInteger rtmpLength = size;
+    PILI_RTMPPacket rtmp_pack;
+    PILI_RTMPPacket_Reset(&rtmp_pack);
+    PILI_RTMPPacket_Alloc(&rtmp_pack,(uint32_t)rtmpLength);
+    
+    rtmp_pack.m_nBodySize = (uint32_t)size;
+    memcpy(rtmp_pack.m_body,data,size);
+    rtmp_pack.m_hasAbsTimestamp = 0;
+    rtmp_pack.m_packetType = nPacketType;
+    if(_rtmp) rtmp_pack.m_nInfoField2 = _rtmp->m_stream_id;
+    rtmp_pack.m_nChannel = 0x04;
+    rtmp_pack.m_headerType = RTMP_PACKET_SIZE_LARGE;
+    if (RTMP_PACKET_TYPE_AUDIO == nPacketType && size !=4){
+        rtmp_pack.m_headerType = RTMP_PACKET_SIZE_MEDIUM;
+    }
+    rtmp_pack.m_nTimeStamp = (uint32_t)nTimestamp;
+    
+    NSInteger nRet = [self RtmpPacketSend:&rtmp_pack];
+    
+    PILI_RTMPPacket_Free(&rtmp_pack);
+    return nRet;
+}
+
+- (NSInteger)RtmpPacketSend:(PILI_RTMPPacket*)packet{
+    if (PILI_RTMP_IsConnected(_rtmp)){
+        int success = PILI_RTMP_SendPacket(_rtmp,packet, 0, NULL);
+        if (success > 0) {
+            [self sendFrameData];
+        }
+        return success;
+    }
+    return -1;
 }
 
 @end

@@ -24,9 +24,12 @@
 
 - (instancetype)initWithPushURL:(NSString *)pushURL;
 
-//连接
+//链接
 - (void)connect;
-//断开连接
+//关闭
 - (void)disConnect;
+
+//发送视频流
+- (void)sendVideoFrame:(JCFLVVideoFrame *)videoFrame;
 
 @end

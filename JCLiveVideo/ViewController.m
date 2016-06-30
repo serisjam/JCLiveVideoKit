@@ -16,12 +16,14 @@
 #import "JCAudioCapture.h"
 #import "JCAACEncoder.h"
 
-#import "JCRtmp.h"
+#import "LFStreamRtmpSocket.h"
 
 /**  时间戳 */
 #define NOW (CACurrentMediaTime()*1000)
 
-@interface ViewController () <JCH264EncoderDelegate, JAACEncoderDelegate>
+@interface ViewController () <JCH264EncoderDelegate, JAACEncoderDelegate> {
+    dispatch_semaphore_t _lock;
+}
 
 @property (nonatomic, strong) JCVideoCapture *videoCapture;
 @property (nonatomic, strong) JCH264Encoder *jcH264Encoder;
@@ -29,12 +31,14 @@
 @property (nonatomic, strong) JCAudioCapture *audioCapture;
 @property (nonatomic, strong) JCAACEncoder *audioEncoder;
 
-@property (nonatomic, assign) uint64_t timestamp;
-
 @property (nonatomic, strong) NSFileHandle *h264FileHandle;
 @property (nonatomic, strong) NSFileHandle *aacFileHandle;
 
-@property (nonatomic, strong) JCRtmp *rtmp;
+@property (nonatomic, strong) LFStreamRtmpSocket *rtmp;
+
+@property (nonatomic, assign) uint64_t timestamp;
+@property (nonatomic, assign) BOOL isFirstFrame;
+@property (nonatomic, assign) uint64_t currentTimestamp;
 
 @end
 
@@ -44,6 +48,7 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
     _videoCapture = [[JCVideoCapture alloc] init];
+    _lock = dispatch_semaphore_create(1);
     
     //打开文件句柄, 记录h264文件
     NSFileManager *fileManager = [NSFileManager defaultManager];
@@ -62,9 +67,11 @@
     
     self.aacFileHandle = [NSFileHandle fileHandleForWritingAtPath:aacFile];
     
-    self.rtmp = [[JCRtmp alloc] initWithPushURL:@"rtmp://192.168.10.253:1935/5showcam/stream111111"];
+    LFLiveStreamInfo *streamInfo = [[LFLiveStreamInfo alloc] init];
+    streamInfo.url = @"rtmp://waashowpush.8686c.com/5showcam/stream100001013";
+    self.rtmp = [[LFStreamRtmpSocket alloc] initWithStream:streamInfo];
     
-    self.jcH264Encoder = [[JCH264Encoder alloc] initWithJCLiveVideoQuality:JCLiveVideoQuality_Low1];
+    self.jcH264Encoder = [[JCH264Encoder alloc] initWithJCLiveVideoQuality:JCLiveVideoQuality_Low2];
     [self.jcH264Encoder setDelegate:self];
     
     self.audioCapture = [[JCAudioCapture alloc] init];
@@ -81,45 +88,6 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
-    dispatch_queue_t queue = dispatch_queue_create("com.youku.LaiFeng.live.socketQueue", NULL);
-    
-    //rtmp推流
-    dispatch_async(queue, ^{
-        if(_rtmp != NULL){
-            PILI_RTMP_Close(_rtmp, &_error);
-            PILI_RTMP_Free(_rtmp);
-            _sendVideoHead = NO;
-        }
-        
-        _rtmp = PILI_RTMP_Alloc();
-        PILI_RTMP_Init(_rtmp);
-        
-        NSString *rtmpStringURL = @"rtmp://waashowpush.8686c.com/5showcam/stream100001013";
-        if ( PILI_RTMP_SetupURL(_rtmp, (char *)[rtmpStringURL cStringUsingEncoding:NSASCIIStringEncoding], &_error) < 0) {
-            PILI_RTMP_Close(_rtmp, &_error);
-            PILI_RTMP_Free(_rtmp);
-            _sendVideoHead = NO;
-        }
-        
-        //设置为发布流
-        PILI_RTMP_EnableWrite(_rtmp);
-        _rtmp->Link.timeout = 4;
-        
-        //链接服务器
-        if (PILI_RTMP_Connect(_rtmp, NULL, &_error) < 0){
-            PILI_RTMP_Close(_rtmp, &_error);
-            PILI_RTMP_Free(_rtmp);
-            _sendVideoHead = NO;
-        }
-        
-        //链接流
-        if (PILI_RTMP_ConnectStream(_rtmp, 0, &_error) < 0) {
-            PILI_RTMP_Close(_rtmp, &_error);
-            PILI_RTMP_Free(_rtmp);
-            _sendVideoHead = NO;
-        }
-    });
-    
     __weak typeof(self) weakSelf = self;
     [_videoCapture carmeraScanOriginBlock:^(CMSampleBufferRef sampleBufferRef){
         [weakSelf.jcH264Encoder encodeVideoData:sampleBufferRef timeStamp:[weakSelf currentTimestamp]];
@@ -129,10 +97,11 @@
         [weakSelf.audioEncoder encodeAudioData:audioBufferList timeStamp:[weakSelf currentTimestamp]];
     }];
     
+    [UIApplication sharedApplication].idleTimerDisabled = YES;
     [_videoCapture startRunning];
     [self.audioCapture startRunning];
     
-    [self.rtmp connect];
+    [self.rtmp start];
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
@@ -150,14 +119,14 @@
 
 - (IBAction)onSwitch:(id)sender {
 //    [_videoCapture swapFrontAndBackCameras];
-    
-    [_videoCapture stopRunning];
-    [self.jcH264Encoder endVideoCompression];
-    
-    [_audioCapture stopRunning];
-    
-    [self.h264FileHandle closeFile];
-    [self.aacFileHandle closeFile];
+//    
+//    [_videoCapture stopRunning];
+//    [self.jcH264Encoder endVideoCompression];
+//    
+//    [_audioCapture stopRunning];
+//    
+//    [self.h264FileHandle closeFile];
+//    [self.aacFileHandle closeFile];
 }
 
 #pragma mark JCACCEncoderDelegate
@@ -170,7 +139,7 @@
 #pragma mark JCH264EncoderDelegate
 
 - (void)getEncoder:(JCH264Encoder *)encoder withVideoFrame:(JCFLVVideoFrame *)videoFrame {
-    [self.rtmp sendVideoFrame:videoFrame];
+    [self.rtmp sendFrame:videoFrame];
 }
 
 //- (void)getEncodedData:(NSData *)data isKeyFrame:(BOOL)isKeyFrame {
@@ -199,19 +168,18 @@
 
 #pragma mark private
 
-- (uint64_t)currentTimestamp {
-    static OSSpinLock lock;
-    
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        lock = OS_SPINLOCK_INIT;
+- (uint64_t)currentTimestamp{
+    dispatch_semaphore_wait(_lock, DISPATCH_TIME_FOREVER);
+    uint64_t currentts = 0;
+    if(_isFirstFrame == true) {
         _timestamp = NOW;
-    });
-    
-    OSSpinLockLock(&lock);
-    uint64_t currentts = NOW - _timestamp;
-    OSSpinLockUnlock(&lock);
-    
+        _isFirstFrame = false;
+        currentts = 0;
+    }
+    else {
+        currentts = NOW - _timestamp;
+    }
+    dispatch_semaphore_signal(_lock);
     return currentts;
 }
 

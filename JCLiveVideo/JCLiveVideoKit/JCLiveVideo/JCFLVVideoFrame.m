@@ -37,8 +37,8 @@
         _ppsData = pps;
         _contentData = data;
         
-        _headerLength = 0;
-        _bodyLength = 0;
+//        _headerLength = 0;
+//        _bodyLength = 0;
     }
     
     return self;
@@ -92,7 +92,7 @@
     memcpy(&body[iIndex], pps, pps_len);
     iIndex +=  pps_len;
     
-    _headerLength = iIndex;
+//    _headerLength = iIndex;
     
     return body;
 }
@@ -122,7 +122,7 @@
     body[i++] = (_contentData.length ) & 0xff;
     memcpy(&body[i], _contentData.bytes, _contentData.length);
     
-    _bodyLength = rtmpLength;
+//    _bodyLength = rtmpLength;
     
     return body;
 }

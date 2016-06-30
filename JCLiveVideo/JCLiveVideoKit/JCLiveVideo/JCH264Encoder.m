@@ -151,6 +151,9 @@
         default:
             break;
     }
+    
+    self.width = 368;
+    self.height = 640;
     self.videoMaxKeyframeInterval = self.videoFrameRate*2;
 }
 
@@ -174,10 +177,7 @@
 
 @property (nonatomic, assign) NSInteger frameCount;
 
-@property (nonatomic, assign) BOOL enbaleWriteVideoFile;
-
 //是否在后台，在后台不编码
-
 @property (nonatomic, assign) BOOL isBackGround;
 
 @end
@@ -196,10 +196,6 @@
         self.sps = nil;
         self.pps = nil;
         self.frameCount = 0;
-        
-#ifdef DEBUG
-        self.enbaleWriteVideoFile = YES;
-#endif
         
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(willEnterBackground:) name:UIApplicationWillResignActiveNotification object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(willEnterForeground:) name:UIApplicationDidBecomeActiveNotification object:nil];
@@ -226,25 +222,6 @@
     
     [self configVideoCompressonWith:_jcLiveVideoproperties];
     
-}
-
-- (void)changeJCLiveVideoOrientation {
-    switch ([[UIDevice currentDevice] orientation]) {
-        case UIInterfaceOrientationPortrait:
-#if defined(__IPHONE_8_0) && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_8_0
-        case UIInterfaceOrientationUnknown:
-#endif
-            break;
-        case UIInterfaceOrientationPortraitUpsideDown:
-            break;
-        case UIInterfaceOrientationLandscapeLeft:
-            
-            break;
-        case UIInterfaceOrientationLandscapeRight:
-            break;
-        default:
-            break;
-    }
 }
 
 
@@ -305,12 +282,16 @@ static void VideoCompressonOutputCallback(void *outputCallbackRefCon, void *sour
     }
     
     JCH264Encoder* encoder = (__bridge JCH264Encoder*)outputCallbackRefCon;
-    
     BOOL isKeyFrame = !CFDictionaryContainsKey(dic, kCMSampleAttachmentKey_NotSync);
-    
     uint64_t timeStamp = [((__bridge_transfer NSNumber*)sourceFrameRefCon) longLongValue];
     
     if (isKeyFrame) {
+        NSLog(@"key frame");
+    } else {
+        NSLog(@"p b frame");
+    }
+    
+    if (isKeyFrame && !encoder.sps) {
         CMFormatDescriptionRef formatDesc = CMSampleBufferGetFormatDescription(sampleBuffer);
         size_t sparameterSetSize, sparameterSetCount;
         const uint8_t *sparameterSet;
@@ -350,12 +331,12 @@ static void VideoCompressonOutputCallback(void *outputCallbackRefCon, void *sour
             
             NALUnitLength = CFSwapInt32BigToHost(NALUnitLength);
             
-            NSData *data = [[NSData alloc] initWithBytes:dataPointer+bufferOffset+AVCCHeaderLength length:NALUnitLength];
+            JCFLVVideoFrame *videoFrame = [JCFLVVideoFrame new];
+            videoFrame.isKeyFrame = isKeyFrame;
+            videoFrame.timestamp = timeStamp;
+            videoFrame.sps = encoder.sps;
+            videoFrame.pps = encoder.pps;
             
-            JCFLVVideoFrame *videoFrame = [[JCFLVVideoFrame alloc] initWithSpsData:encoder.sps withPPSData:encoder.pps andBodyData:data];
-            [videoFrame setIsKeyFrame:isKeyFrame];
-            [videoFrame setTimestamp:timeStamp];
-
             if ([encoder.delegate respondsToSelector:@selector(getEncoder:withVideoFrame:)]) {
                 [encoder.delegate getEncoder:encoder withVideoFrame:videoFrame];
             }

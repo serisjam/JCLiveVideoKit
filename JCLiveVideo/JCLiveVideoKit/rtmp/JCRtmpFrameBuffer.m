@@ -6,11 +6,11 @@
 //  Copyright © 2016年 Jam. All rights reserved.
 //
 
-#import <libkern/OSAtomic.h>
-
 #import "JCRtmpFrameBuffer.h"
 
-@interface JCRtmpFrameBuffer ()
+@interface JCRtmpFrameBuffer () {
+    dispatch_semaphore_t _lock;
+}
 
 @property (nonatomic, strong) NSMutableArray *buffers;
 //取样帧容器
@@ -30,6 +30,8 @@ static const NSUInteger defaultMaxBuffers = 10;
     self = [super init];
     
     if (self) {
+        _lock = dispatch_semaphore_create(1);
+        
         self.buffers = [NSMutableArray arrayWithCapacity:max];
         self.sampleBuffers = [NSMutableArray arrayWithCapacity:defaultMaxBuffers];
     }
@@ -42,16 +44,8 @@ static const NSUInteger defaultMaxBuffers = 10;
 }
 
 - (void)addVideoFrame:(JCFLVVideoFrame *)videoFrame {
-    
-    static OSSpinLock lock;
-    
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        lock = OS_SPINLOCK_INIT;
-    });
-    
-    OSSpinLockLock(&lock);
 
+    dispatch_semaphore_wait(_lock, DISPATCH_TIME_FOREVER);
     if (self.sampleBuffers.count < defaultMaxBuffers) {
         [self.sampleBuffers addObject:videoFrame];
     } else {
@@ -70,12 +64,14 @@ static const NSUInteger defaultMaxBuffers = 10;
             [self.buffers addObject:videoFrame];
         }
     }
-    
-    OSSpinLockUnlock(&lock);
+    dispatch_semaphore_signal(_lock);
 }
 
 - (JCFLVVideoFrame *)getFirstVideoFrame {
+    
+    dispatch_semaphore_wait(_lock, DISPATCH_TIME_FOREVER);
     JCFLVVideoFrame *videoFrame = [self.buffers objectAtIndex:0];
+    dispatch_semaphore_signal(_lock);
     
     if (videoFrame) {
         [self.buffers removeObjectAtIndex:0];
