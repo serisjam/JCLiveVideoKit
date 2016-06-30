@@ -7,9 +7,20 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "JCRtmpConnectStatus.h"
+#import "JCFLVVideoFrame.h"
 
+@class JCRtmp;
+
+@protocol JCRtmpConnectDelegate <NSObject>
+
+- (void)JCRtmp:(JCRtmp *)rtmp withJCRtmpConnectStatus:(JCLiveStatus)liveStatus;
+
+@end
 
 @interface JCRtmp : NSObject
+
+@property (nonatomic, assign) id<JCRtmpConnectDelegate> delegate;
 
 - (instancetype)initWithPushURL:(NSString *)pushURL;
 

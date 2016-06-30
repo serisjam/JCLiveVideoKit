@@ -24,10 +24,11 @@
 		1652A2D72F134F7B52B99F9A /* libPods-JCLiveVideo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 34FB9414F82AACFE2409E85B /* libPods-JCLiveVideo.a */; };
 		396151B71D20C6D1009B40FC /* AudioCaptureViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 396151B61D20C6D1009B40FC /* AudioCaptureViewController.m */; };
 		396151BA1D20F88C009B40FC /* JCAACEncoder.m in Sources */ = {isa = PBXBuildFile; fileRef = 396151B91D20F88C009B40FC /* JCAACEncoder.m */; };
+		39ADEC161D24B00E007E6E55 /* JCRtmpFrameBuffer.m in Sources */ = {isa = PBXBuildFile; fileRef = 39ADEC151D24B00E007E6E55 /* JCRtmpFrameBuffer.m */; };
+		39ADEC191D24B489007E6E55 /* JCRtmpConnectStatus.m in Sources */ = {isa = PBXBuildFile; fileRef = 39ADEC181D24B489007E6E55 /* JCRtmpConnectStatus.m */; };
 		39CE04B51D239EAE00C20D74 /* JCFLVVideoFrame.m in Sources */ = {isa = PBXBuildFile; fileRef = 39CE04B41D239EAE00C20D74 /* JCFLVVideoFrame.m */; };
 		39CE04B81D239EBE00C20D74 /* JCFLVAudioFrame.m in Sources */ = {isa = PBXBuildFile; fileRef = 39CE04B71D239EBE00C20D74 /* JCFLVAudioFrame.m */; };
 		39CE04BB1D23C4DB00C20D74 /* JCRtmp.m in Sources */ = {isa = PBXBuildFile; fileRef = 39CE04BA1D23C4DB00C20D74 /* JCRtmp.m */; };
-		39CE04BE1D23CA3B00C20D74 /* JCRtmpFrameBuffer.m in Sources */ = {isa = PBXBuildFile; fileRef = 39CE04BD1D23CA3B00C20D74 /* JCRtmpFrameBuffer.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -59,14 +60,16 @@
 		396151B61D20C6D1009B40FC /* AudioCaptureViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AudioCaptureViewController.m; sourceTree = "<group>"; };
 		396151B81D20F88C009B40FC /* JCAACEncoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JCAACEncoder.h; sourceTree = "<group>"; };
 		396151B91D20F88C009B40FC /* JCAACEncoder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JCAACEncoder.m; sourceTree = "<group>"; };
+		39ADEC141D24B00E007E6E55 /* JCRtmpFrameBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JCRtmpFrameBuffer.h; sourceTree = "<group>"; };
+		39ADEC151D24B00E007E6E55 /* JCRtmpFrameBuffer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JCRtmpFrameBuffer.m; sourceTree = "<group>"; };
+		39ADEC171D24B489007E6E55 /* JCRtmpConnectStatus.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JCRtmpConnectStatus.h; sourceTree = "<group>"; };
+		39ADEC181D24B489007E6E55 /* JCRtmpConnectStatus.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JCRtmpConnectStatus.m; sourceTree = "<group>"; };
 		39CE04B31D239EAE00C20D74 /* JCFLVVideoFrame.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JCFLVVideoFrame.h; sourceTree = "<group>"; };
 		39CE04B41D239EAE00C20D74 /* JCFLVVideoFrame.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JCFLVVideoFrame.m; sourceTree = "<group>"; };
 		39CE04B61D239EBE00C20D74 /* JCFLVAudioFrame.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JCFLVAudioFrame.h; sourceTree = "<group>"; };
 		39CE04B71D239EBE00C20D74 /* JCFLVAudioFrame.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JCFLVAudioFrame.m; sourceTree = "<group>"; };
 		39CE04B91D23C4DB00C20D74 /* JCRtmp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JCRtmp.h; sourceTree = "<group>"; };
 		39CE04BA1D23C4DB00C20D74 /* JCRtmp.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JCRtmp.m; sourceTree = "<group>"; };
-		39CE04BC1D23CA3B00C20D74 /* JCRtmpFrameBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JCRtmpFrameBuffer.h; sourceTree = "<group>"; };
-		39CE04BD1D23CA3B00C20D74 /* JCRtmpFrameBuffer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JCRtmpFrameBuffer.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -192,8 +195,10 @@
 		39370C921D213177001075DE /* rtmp */ = {
 			isa = PBXGroup;
 			children = (
-				39CE04BC1D23CA3B00C20D74 /* JCRtmpFrameBuffer.h */,
-				39CE04BD1D23CA3B00C20D74 /* JCRtmpFrameBuffer.m */,
+				39ADEC141D24B00E007E6E55 /* JCRtmpFrameBuffer.h */,
+				39ADEC151D24B00E007E6E55 /* JCRtmpFrameBuffer.m */,
+				39ADEC171D24B489007E6E55 /* JCRtmpConnectStatus.h */,
+				39ADEC181D24B489007E6E55 /* JCRtmpConnectStatus.m */,
 				39CE04B91D23C4DB00C20D74 /* JCRtmp.h */,
 				39CE04BA1D23C4DB00C20D74 /* JCRtmp.m */,
 			);
@@ -237,6 +242,7 @@
 				TargetAttributes = {
 					0DACD7C71D1E274800C212A5 = {
 						CreatedOnToolsVersion = 7.3.1;
+						DevelopmentTeam = RGDB7M59PE;
 					};
 				};
 			};
@@ -372,11 +378,12 @@
 				0DACD7D31D1E274800C212A5 /* ViewController.m in Sources */,
 				0DACD7D01D1E274800C212A5 /* AppDelegate.m in Sources */,
 				0DFA53F11D1EDE9D004CFF11 /* JCAudioCapture.m in Sources */,
-				39CE04BE1D23CA3B00C20D74 /* JCRtmpFrameBuffer.m in Sources */,
+				39ADEC161D24B00E007E6E55 /* JCRtmpFrameBuffer.m in Sources */,
 				396151BA1D20F88C009B40FC /* JCAACEncoder.m in Sources */,
 				0D65BC851D1E41E3005F13FB /* JCH264Encoder.m in Sources */,
 				0DACD7CD1D1E274800C212A5 /* main.m in Sources */,
 				39CE04B81D239EBE00C20D74 /* JCFLVAudioFrame.m in Sources */,
+				39ADEC191D24B489007E6E55 /* JCRtmpConnectStatus.m in Sources */,
 				396151B71D20C6D1009B40FC /* AudioCaptureViewController.m in Sources */,
 				39CE04B51D239EAE00C20D74 /* JCFLVVideoFrame.m in Sources */,
 				0DACD7E71D1E27B400C212A5 /* JCVideoCapture.m in Sources */,
@@ -493,11 +500,14 @@
 			baseConfigurationReference = 34819DEA12095F06C0F4DBAF /* Pods-JCLiveVideo.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = JCLiveVideo/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.jam.JCLiveVideo;
+				PRODUCT_BUNDLE_IDENTIFIER = com.xlingmao.JCLiveVideo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 			};
 			name = Debug;
 		};
@@ -506,11 +516,14 @@
 			baseConfigurationReference = 35D41FFA194879E2F35BD105 /* Pods-JCLiveVideo.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = JCLiveVideo/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.jam.JCLiveVideo;
+				PRODUCT_BUNDLE_IDENTIFIER = com.xlingmao.JCLiveVideo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 			};
 			name = Release;
 		};
