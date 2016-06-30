@@ -13,4 +13,9 @@
 
 - (instancetype)initWithPushURL:(NSString *)pushURL;
 
+//连接
+- (void)connect;
+//断开连接
+- (void)disConnect;
+
 @end

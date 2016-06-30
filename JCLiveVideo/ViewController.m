@@ -69,7 +69,7 @@
     self.aacFileHandle = [NSFileHandle fileHandleForWritingAtPath:aacFile];
     
     
-    self.jcH264Encoder = [[JCH264Encoder alloc] initWithJCLiveVideoQuality:JCLiveVideoQuality_Medium1];
+    self.jcH264Encoder = [[JCH264Encoder alloc] initWithJCLiveVideoQuality:JCLiveVideoQuality_Low1];
     [self.jcH264Encoder setDelegate:self];
     
     self.audioCapture = [[JCAudioCapture alloc] init];
@@ -100,7 +100,7 @@
         _rtmp = PILI_RTMP_Alloc();
         PILI_RTMP_Init(_rtmp);
         
-        NSString *rtmpStringURL = @"rtmp://192.168.10.253:1935/5showcam/stream111111";
+        NSString *rtmpStringURL = @"rtmp://waashowpush.8686c.com/5showcam/stream100001013";
         if ( PILI_RTMP_SetupURL(_rtmp, (char *)[rtmpStringURL cStringUsingEncoding:NSASCIIStringEncoding], &_error) < 0) {
             PILI_RTMP_Close(_rtmp, &_error);
             PILI_RTMP_Free(_rtmp);

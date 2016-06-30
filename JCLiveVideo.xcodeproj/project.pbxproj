@@ -207,12 +207,15 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 0DACD7DF1D1E274800C212A5 /* Build configuration list for PBXNativeTarget "JCLiveVideo" */;
 			buildPhases = (
+				301C6717B66619FF29C4C454 /* 📦 Check Pods Manifest.lock */,
 				64D855AB62C6A7D7BEDD161F /* [CP] Check Pods Manifest.lock */,
 				0DACD7C41D1E274800C212A5 /* Sources */,
 				0DACD7C51D1E274800C212A5 /* Frameworks */,
 				0DACD7C61D1E274800C212A5 /* Resources */,
 				5A66EDCED5D3AD224B0752E6 /* [CP] Embed Pods Frameworks */,
 				31FA65D6372D8F2B01068EB4 /* [CP] Copy Pods Resources */,
+				50E8D5DF90A46CB57F2C4C38 /* 📦 Embed Pods Frameworks */,
+				B5BC64009C7238FDA2DABF6C /* 📦 Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -269,6 +272,21 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		301C6717B66619FF29C4C454 /* 📦 Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "📦 Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
 		31FA65D6372D8F2B01068EB4 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -282,6 +300,21 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-JCLiveVideo/Pods-JCLiveVideo-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		50E8D5DF90A46CB57F2C4C38 /* 📦 Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "📦 Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-JCLiveVideo/Pods-JCLiveVideo-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		5A66EDCED5D3AD224B0752E6 /* [CP] Embed Pods Frameworks */ = {
@@ -312,6 +345,21 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		B5BC64009C7238FDA2DABF6C /* 📦 Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "📦 Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-JCLiveVideo/Pods-JCLiveVideo-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
