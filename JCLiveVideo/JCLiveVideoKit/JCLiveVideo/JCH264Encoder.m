@@ -285,12 +285,6 @@ static void VideoCompressonOutputCallback(void *outputCallbackRefCon, void *sour
     BOOL isKeyFrame = !CFDictionaryContainsKey(dic, kCMSampleAttachmentKey_NotSync);
     uint64_t timeStamp = [((__bridge_transfer NSNumber*)sourceFrameRefCon) longLongValue];
     
-    if (isKeyFrame) {
-        NSLog(@"key frame");
-    } else {
-        NSLog(@"p b frame");
-    }
-    
     if (isKeyFrame && !encoder.sps) {
         CMFormatDescriptionRef formatDesc = CMSampleBufferGetFormatDescription(sampleBuffer);
         size_t sparameterSetSize, sparameterSetCount;
@@ -331,12 +325,11 @@ static void VideoCompressonOutputCallback(void *outputCallbackRefCon, void *sour
             
             NALUnitLength = CFSwapInt32BigToHost(NALUnitLength);
             
-            JCFLVVideoFrame *videoFrame = [JCFLVVideoFrame new];
-            videoFrame.data = [[NSData alloc] initWithBytes:(dataPointer + bufferOffset + AVCCHeaderLength) length:NALUnitLength];
+            NSData *data = [[NSData alloc] initWithBytes:dataPointer+bufferOffset+AVCCHeaderLength length:NALUnitLength];
+            JCFLVVideoFrame *videoFrame = [[JCFLVVideoFrame alloc] initWithSpsData:encoder.sps withPPSData:encoder.pps andBodyData:data];
+
             videoFrame.isKeyFrame = isKeyFrame;
             videoFrame.timestamp = timeStamp;
-            videoFrame.sps = encoder.sps;
-            videoFrame.pps = encoder.pps;
             
             if ([encoder.delegate respondsToSelector:@selector(getEncoder:withVideoFrame:)]) {
                 [encoder.delegate getEncoder:encoder withVideoFrame:videoFrame];
@@ -369,14 +362,13 @@ static void VideoCompressonOutputCallback(void *outputCallbackRefCon, void *sour
 }
 
 #pragma mark -VideoCompressEncoder
-- (void)encodeVideoData:(CMSampleBufferRef)pixelBuffer timeStamp:(uint64_t)timeStamp{
+- (void)encodeVideoData:(CVImageBufferRef)imageBuffer timeStamp:(uint64_t)timeStamp{
     
     if (_isBackGround) {
         return ;
     }
     
     dispatch_sync(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
-        CVImageBufferRef imageBuffer = (CVImageBufferRef)CMSampleBufferGetImageBuffer(pixelBuffer);
         _frameCount++;
         CMTime presentationTimeStamp = CMTimeMake(_frameCount, 1000);
         CMTime duration = CMTimeMake(1, (int32_t)self.jcLiveVideoproperties.videoFrameRate);

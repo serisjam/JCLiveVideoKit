@@ -16,12 +16,12 @@
 #import "JCAudioCapture.h"
 #import "JCAACEncoder.h"
 
-#import "LFStreamRtmpSocket.h"
+#import "JCRtmp.h"
 
 /**  时间戳 */
 #define NOW (CACurrentMediaTime()*1000)
 
-@interface ViewController () <JCH264EncoderDelegate, JAACEncoderDelegate> {
+@interface ViewController () <JCH264EncoderDelegate, JAACEncoderDelegate, JCRtmpConnectDelegate> {
     dispatch_semaphore_t _lock;
 }
 
@@ -34,11 +34,12 @@
 @property (nonatomic, strong) NSFileHandle *h264FileHandle;
 @property (nonatomic, strong) NSFileHandle *aacFileHandle;
 
-@property (nonatomic, strong) LFStreamRtmpSocket *rtmp;
+@property (nonatomic, strong) JCRtmp *rtmp;
 
 @property (nonatomic, assign) uint64_t timestamp;
 @property (nonatomic, assign) BOOL isFirstFrame;
 @property (nonatomic, assign) uint64_t currentTimestamp;
+@property (nonatomic, assign) BOOL uploading;
 
 @end
 
@@ -67,9 +68,8 @@
     
     self.aacFileHandle = [NSFileHandle fileHandleForWritingAtPath:aacFile];
     
-    LFLiveStreamInfo *streamInfo = [[LFLiveStreamInfo alloc] init];
-    streamInfo.url = @"rtmp://waashowpush.8686c.com/5showcam/stream100001013";
-    self.rtmp = [[LFStreamRtmpSocket alloc] initWithStream:streamInfo];
+    self.rtmp = [[JCRtmp alloc] initWithPushURL:@"rtmp://192.168.10.253:1935/5showcam/stream111111"];
+    [self.rtmp setDelegate:self];
     
     self.jcH264Encoder = [[JCH264Encoder alloc] initWithJCLiveVideoQuality:JCLiveVideoQuality_Low2];
     [self.jcH264Encoder setDelegate:self];
@@ -89,19 +89,18 @@
     [super viewWillAppear:animated];
     
     __weak typeof(self) weakSelf = self;
-    [_videoCapture carmeraScanOriginBlock:^(CMSampleBufferRef sampleBufferRef){
-        [weakSelf.jcH264Encoder encodeVideoData:sampleBufferRef timeStamp:[weakSelf currentTimestamp]];
+    [_videoCapture carmeraScanOriginBlock:^(CVImageBufferRef sampleBufferRef){
+//        [weakSelf.jcH264Encoder encodeVideoData:sampleBufferRef timeStamp:[weakSelf currentTimestamp]];
     }];
     
-    [self.audioCapture audioCaptureOriginBlock:^(AudioBufferList audioBufferList){
-        [weakSelf.audioEncoder encodeAudioData:audioBufferList timeStamp:[weakSelf currentTimestamp]];
-    }];
-    
-    [UIApplication sharedApplication].idleTimerDisabled = YES;
+//    [self.audioCapture audioCaptureOriginBlock:^(AudioBufferList audioBufferList){
+//        [weakSelf.audioEncoder encodeAudioData:audioBufferList timeStamp:[weakSelf currentTimestamp]];
+//    }];
+
     [_videoCapture startRunning];
     [self.audioCapture startRunning];
     
-    [self.rtmp start];
+    [self.rtmp connect];
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
@@ -139,7 +138,21 @@
 #pragma mark JCH264EncoderDelegate
 
 - (void)getEncoder:(JCH264Encoder *)encoder withVideoFrame:(JCFLVVideoFrame *)videoFrame {
-    [self.rtmp sendFrame:videoFrame];
+//    if (self.uploading) {
+//        [self.rtmp sendVideoFrame:videoFrame];
+//    }
+}
+
+#pragma RTMPDelegate
+
+- (void)JCRtmp:(JCRtmp *)rtmp withJCRtmpConnectStatus:(JCLiveStatus)liveStatus;{
+    if(liveStatus == JCLiveStatusConnect){
+        if(!self.uploading){
+            self.timestamp = 0;
+            self.isFirstFrame = YES;
+            self.uploading = YES;
+        }
+    }
 }
 
 //- (void)getEncodedData:(NSData *)data isKeyFrame:(BOOL)isKeyFrame {

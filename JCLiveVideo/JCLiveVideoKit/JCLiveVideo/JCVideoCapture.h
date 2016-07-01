@@ -35,7 +35,7 @@ typedef NS_ENUM(NSInteger, JCVideoCaptureDevicePosition) {
 
 @end
 
-typedef void(^cameraCaptureOriginDataBlock)(CMSampleBufferRef sampleBufferRef);
+typedef void(^cameraCaptureOriginDataBlock)(CVImageBufferRef sampleBufferRef);
 
 @interface JCVideoCapture : NSObject
 

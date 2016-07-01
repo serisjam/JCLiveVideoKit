@@ -11,20 +11,16 @@
 @interface JCFLVVideoFrame : NSObject
 
 @property (nonatomic, assign) uint64_t timestamp;
-
 @property (nonatomic, assign) BOOL isKeyFrame;
-@property (nonatomic, strong) NSData *sps;
-@property (nonatomic, strong) NSData *pps;
-@property (nonatomic, strong) NSData *data;
 
-////flv格式tag header长度
-//@property (nonatomic, assign, readonly) NSInteger headerLength;
-////flv格式tag data长度
-//@property (nonatomic, assign, readonly) NSInteger bodyLength;
-//
-//- (instancetype)initWithSpsData:(NSData *)sps withPPSData:(NSData *)pps andBodyData:(NSData *)data;
-//
-//- (unsigned char *)getHeaderData;
-//- (unsigned char *)getBodyData;
+//flv格式tag header长度
+@property (nonatomic, assign, readonly) NSInteger headerLength;
+//flv格式tag data长度
+@property (nonatomic, assign, readonly) NSInteger bodyLength;
+
+- (instancetype)initWithSpsData:(NSData *)sps withPPSData:(NSData *)pps andBodyData:(NSData *)data;
+
+- (unsigned char *)getHeaderData;
+- (unsigned char *)getBodyData;
 
 @end

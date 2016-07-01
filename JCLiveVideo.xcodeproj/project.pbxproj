@@ -24,11 +24,13 @@
 		1652A2D72F134F7B52B99F9A /* libPods-JCLiveVideo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 34FB9414F82AACFE2409E85B /* libPods-JCLiveVideo.a */; };
 		396151B71D20C6D1009B40FC /* AudioCaptureViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 396151B61D20C6D1009B40FC /* AudioCaptureViewController.m */; };
 		396151BA1D20F88C009B40FC /* JCAACEncoder.m in Sources */ = {isa = PBXBuildFile; fileRef = 396151B91D20F88C009B40FC /* JCAACEncoder.m */; };
-		39ADEC161D24B00E007E6E55 /* JCRtmpFrameBuffer.m in Sources */ = {isa = PBXBuildFile; fileRef = 39ADEC151D24B00E007E6E55 /* JCRtmpFrameBuffer.m */; };
-		39ADEC191D24B489007E6E55 /* JCRtmpConnectStatus.m in Sources */ = {isa = PBXBuildFile; fileRef = 39ADEC181D24B489007E6E55 /* JCRtmpConnectStatus.m */; };
+		39826CF01D2648A000024B77 /* GPUImageBeautyFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 39826CED1D2648A000024B77 /* GPUImageBeautyFilter.m */; };
+		39826CF11D2648A000024B77 /* GPUImageEmptyFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 39826CEF1D2648A000024B77 /* GPUImageEmptyFilter.m */; };
 		39CE04B51D239EAE00C20D74 /* JCFLVVideoFrame.m in Sources */ = {isa = PBXBuildFile; fileRef = 39CE04B41D239EAE00C20D74 /* JCFLVVideoFrame.m */; };
 		39CE04B81D239EBE00C20D74 /* JCFLVAudioFrame.m in Sources */ = {isa = PBXBuildFile; fileRef = 39CE04B71D239EBE00C20D74 /* JCFLVAudioFrame.m */; };
-		39CE04BB1D23C4DB00C20D74 /* JCRtmp.m in Sources */ = {isa = PBXBuildFile; fileRef = 39CE04BA1D23C4DB00C20D74 /* JCRtmp.m */; };
+		39D7B6051D263F8700300F66 /* JCRtmp.m in Sources */ = {isa = PBXBuildFile; fileRef = 39D7B6001D263F8700300F66 /* JCRtmp.m */; };
+		39D7B6061D263F8700300F66 /* JCRtmpConnectStatus.m in Sources */ = {isa = PBXBuildFile; fileRef = 39D7B6021D263F8700300F66 /* JCRtmpConnectStatus.m */; };
+		39D7B6071D263F8700300F66 /* JCRtmpFrameBuffer.m in Sources */ = {isa = PBXBuildFile; fileRef = 39D7B6041D263F8700300F66 /* JCRtmpFrameBuffer.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -60,16 +62,20 @@
 		396151B61D20C6D1009B40FC /* AudioCaptureViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AudioCaptureViewController.m; sourceTree = "<group>"; };
 		396151B81D20F88C009B40FC /* JCAACEncoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JCAACEncoder.h; sourceTree = "<group>"; };
 		396151B91D20F88C009B40FC /* JCAACEncoder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JCAACEncoder.m; sourceTree = "<group>"; };
-		39ADEC141D24B00E007E6E55 /* JCRtmpFrameBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JCRtmpFrameBuffer.h; sourceTree = "<group>"; };
-		39ADEC151D24B00E007E6E55 /* JCRtmpFrameBuffer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JCRtmpFrameBuffer.m; sourceTree = "<group>"; };
-		39ADEC171D24B489007E6E55 /* JCRtmpConnectStatus.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JCRtmpConnectStatus.h; sourceTree = "<group>"; };
-		39ADEC181D24B489007E6E55 /* JCRtmpConnectStatus.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JCRtmpConnectStatus.m; sourceTree = "<group>"; };
+		39826CEC1D2648A000024B77 /* GPUImageBeautyFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GPUImageBeautyFilter.h; sourceTree = "<group>"; };
+		39826CED1D2648A000024B77 /* GPUImageBeautyFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GPUImageBeautyFilter.m; sourceTree = "<group>"; };
+		39826CEE1D2648A000024B77 /* GPUImageEmptyFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GPUImageEmptyFilter.h; sourceTree = "<group>"; };
+		39826CEF1D2648A000024B77 /* GPUImageEmptyFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GPUImageEmptyFilter.m; sourceTree = "<group>"; };
 		39CE04B31D239EAE00C20D74 /* JCFLVVideoFrame.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JCFLVVideoFrame.h; sourceTree = "<group>"; };
 		39CE04B41D239EAE00C20D74 /* JCFLVVideoFrame.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JCFLVVideoFrame.m; sourceTree = "<group>"; };
 		39CE04B61D239EBE00C20D74 /* JCFLVAudioFrame.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JCFLVAudioFrame.h; sourceTree = "<group>"; };
 		39CE04B71D239EBE00C20D74 /* JCFLVAudioFrame.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JCFLVAudioFrame.m; sourceTree = "<group>"; };
-		39CE04B91D23C4DB00C20D74 /* JCRtmp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JCRtmp.h; sourceTree = "<group>"; };
-		39CE04BA1D23C4DB00C20D74 /* JCRtmp.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JCRtmp.m; sourceTree = "<group>"; };
+		39D7B5FF1D263F8700300F66 /* JCRtmp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JCRtmp.h; sourceTree = "<group>"; };
+		39D7B6001D263F8700300F66 /* JCRtmp.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JCRtmp.m; sourceTree = "<group>"; };
+		39D7B6011D263F8700300F66 /* JCRtmpConnectStatus.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JCRtmpConnectStatus.h; sourceTree = "<group>"; };
+		39D7B6021D263F8700300F66 /* JCRtmpConnectStatus.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JCRtmpConnectStatus.m; sourceTree = "<group>"; };
+		39D7B6031D263F8700300F66 /* JCRtmpFrameBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JCRtmpFrameBuffer.h; sourceTree = "<group>"; };
+		39D7B6041D263F8700300F66 /* JCRtmpFrameBuffer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JCRtmpFrameBuffer.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -137,6 +143,7 @@
 		0DACD7E21D1E277200C212A5 /* JCLiveVideoKit */ = {
 			isa = PBXGroup;
 			children = (
+				39826CEB1D2648A000024B77 /* Beauty */,
 				39370C921D213177001075DE /* rtmp */,
 				0DACD7E31D1E279000C212A5 /* JCLiveAudio */,
 				0DACD7E41D1E279000C212A5 /* JCLiveVideo */,
@@ -195,14 +202,25 @@
 		39370C921D213177001075DE /* rtmp */ = {
 			isa = PBXGroup;
 			children = (
-				39ADEC141D24B00E007E6E55 /* JCRtmpFrameBuffer.h */,
-				39ADEC151D24B00E007E6E55 /* JCRtmpFrameBuffer.m */,
-				39ADEC171D24B489007E6E55 /* JCRtmpConnectStatus.h */,
-				39ADEC181D24B489007E6E55 /* JCRtmpConnectStatus.m */,
-				39CE04B91D23C4DB00C20D74 /* JCRtmp.h */,
-				39CE04BA1D23C4DB00C20D74 /* JCRtmp.m */,
+				39D7B5FF1D263F8700300F66 /* JCRtmp.h */,
+				39D7B6001D263F8700300F66 /* JCRtmp.m */,
+				39D7B6011D263F8700300F66 /* JCRtmpConnectStatus.h */,
+				39D7B6021D263F8700300F66 /* JCRtmpConnectStatus.m */,
+				39D7B6031D263F8700300F66 /* JCRtmpFrameBuffer.h */,
+				39D7B6041D263F8700300F66 /* JCRtmpFrameBuffer.m */,
 			);
 			path = rtmp;
+			sourceTree = "<group>";
+		};
+		39826CEB1D2648A000024B77 /* Beauty */ = {
+			isa = PBXGroup;
+			children = (
+				39826CEC1D2648A000024B77 /* GPUImageBeautyFilter.h */,
+				39826CED1D2648A000024B77 /* GPUImageBeautyFilter.m */,
+				39826CEE1D2648A000024B77 /* GPUImageEmptyFilter.h */,
+				39826CEF1D2648A000024B77 /* GPUImageEmptyFilter.m */,
+			);
+			path = Beauty;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -212,7 +230,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 0DACD7DF1D1E274800C212A5 /* Build configuration list for PBXNativeTarget "JCLiveVideo" */;
 			buildPhases = (
-				301C6717B66619FF29C4C454 /* 📦 Check Pods Manifest.lock */,
+				301C6717B66619FF29C4C454 /* [CP] Check Pods Manifest.lock */,
 				64D855AB62C6A7D7BEDD161F /* [CP] Check Pods Manifest.lock */,
 				0DACD7C41D1E274800C212A5 /* Sources */,
 				0DACD7C51D1E274800C212A5 /* Frameworks */,
@@ -278,14 +296,14 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		301C6717B66619FF29C4C454 /* 📦 Check Pods Manifest.lock */ = {
+		301C6717B66619FF29C4C454 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "📦 Check Pods Manifest.lock";
+			name = "[CP] Check Pods Manifest.lock";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -378,16 +396,18 @@
 				0DACD7D31D1E274800C212A5 /* ViewController.m in Sources */,
 				0DACD7D01D1E274800C212A5 /* AppDelegate.m in Sources */,
 				0DFA53F11D1EDE9D004CFF11 /* JCAudioCapture.m in Sources */,
-				39ADEC161D24B00E007E6E55 /* JCRtmpFrameBuffer.m in Sources */,
 				396151BA1D20F88C009B40FC /* JCAACEncoder.m in Sources */,
 				0D65BC851D1E41E3005F13FB /* JCH264Encoder.m in Sources */,
 				0DACD7CD1D1E274800C212A5 /* main.m in Sources */,
 				39CE04B81D239EBE00C20D74 /* JCFLVAudioFrame.m in Sources */,
-				39ADEC191D24B489007E6E55 /* JCRtmpConnectStatus.m in Sources */,
+				39D7B6051D263F8700300F66 /* JCRtmp.m in Sources */,
+				39826CF01D2648A000024B77 /* GPUImageBeautyFilter.m in Sources */,
 				396151B71D20C6D1009B40FC /* AudioCaptureViewController.m in Sources */,
+				39826CF11D2648A000024B77 /* GPUImageEmptyFilter.m in Sources */,
 				39CE04B51D239EAE00C20D74 /* JCFLVVideoFrame.m in Sources */,
+				39D7B6061D263F8700300F66 /* JCRtmpConnectStatus.m in Sources */,
+				39D7B6071D263F8700300F66 /* JCRtmpFrameBuffer.m in Sources */,
 				0DACD7E71D1E27B400C212A5 /* JCVideoCapture.m in Sources */,
-				39CE04BB1D23C4DB00C20D74 /* JCRtmp.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -450,7 +470,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -488,7 +508,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
