@@ -1,7 +1,12 @@
+//
+//  GPUImageBeautifyFilter.m
+//  BeautifyFaceDemo
+//
+//  Created by guikz on 16/4/28.
+//  Copyright © 2016年 guikz. All rights reserved.
+//
 
-
-
-#import "GPUImageBeautyFilter.h"
+#import "GPUImageBeautifyFilter.h"
 
 // Internal CombinationFilter(It should not be used outside)
 @interface GPUImageCombinationFilter : GPUImageThreeInputFilter
@@ -63,7 +68,7 @@ NSString *const kGPUImageBeautifyFragmentShaderString = SHADER_STRING
 
 @end
 
-@implementation GPUImageBeautyFilter
+@implementation GPUImageBeautifyFilter
 
 - (id)init;
 {
@@ -85,22 +90,20 @@ NSString *const kGPUImageBeautifyFragmentShaderString = SHADER_STRING
     combinationFilter = [[GPUImageCombinationFilter alloc] init];
     [self addFilter:combinationFilter];
     
+    emptyFilter = [[GPUImageEmptyFilter alloc]init];
+    [self addFilter:emptyFilter];
+    
     // Adjust HSB
     hsbFilter = [[GPUImageHSBFilter alloc] init];
     [hsbFilter adjustBrightness:1.1];
     [hsbFilter adjustSaturation:1.1];
     
-    gpuemptyImage = [[GPUImageEmptyFilter alloc]init];
-    [self addTarget:gpuemptyImage];
-    
-    
     [bilateralFilter addTarget:combinationFilter];
     [cannyEdgeFilter addTarget:combinationFilter];
-//
     
     [combinationFilter addTarget:hsbFilter];
     
-    self.initialFilters = [NSArray arrayWithObjects:bilateralFilter,cannyEdgeFilter,combinationFilter,gpuemptyImage,nil];
+    self.initialFilters = [NSArray arrayWithObjects:bilateralFilter,cannyEdgeFilter,emptyFilter,combinationFilter,nil];
     self.terminalFilter = hsbFilter;
     
     return self;

@@ -1,8 +1,7 @@
-
-
-
-#import "GPUImage.h"
+#import "GPUImageFilter.h"
 
 @interface GPUImageEmptyFilter : GPUImageFilter
+{
+}
 
 @end

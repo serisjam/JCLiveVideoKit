@@ -48,35 +48,36 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
-    _videoCapture = [[JCVideoCapture alloc] init];
     _lock = dispatch_semaphore_create(1);
     
-    //打开文件句柄, 记录h264文件
-    NSFileManager *fileManager = [NSFileManager defaultManager];
-    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-    NSString *documentsDirectory = [paths objectAtIndex:0];
-    
-    NSString *h264File = [documentsDirectory stringByAppendingPathComponent:@"test.h264"];
-    [fileManager removeItemAtPath:h264File error:nil];
-    [fileManager createFileAtPath:h264File contents:nil attributes:nil];
-    
-    self.h264FileHandle = [NSFileHandle fileHandleForWritingAtPath:h264File];
-    
-    NSString *aacFile = [documentsDirectory stringByAppendingPathComponent:@"test.aac"];
-    [fileManager removeItemAtPath:aacFile error:nil];
-    [fileManager createFileAtPath:aacFile contents:nil attributes:nil];
-    
-    self.aacFileHandle = [NSFileHandle fileHandleForWritingAtPath:aacFile];
+//    //打开文件句柄, 记录h264文件
+//    NSFileManager *fileManager = [NSFileManager defaultManager];
+//    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+//    NSString *documentsDirectory = [paths objectAtIndex:0];
+//    
+//    NSString *h264File = [documentsDirectory stringByAppendingPathComponent:@"test.h264"];
+//    [fileManager removeItemAtPath:h264File error:nil];
+//    [fileManager createFileAtPath:h264File contents:nil attributes:nil];
+//    
+//    self.h264FileHandle = [NSFileHandle fileHandleForWritingAtPath:h264File];
+//    
+//    NSString *aacFile = [documentsDirectory stringByAppendingPathComponent:@"test.aac"];
+//    [fileManager removeItemAtPath:aacFile error:nil];
+//    [fileManager createFileAtPath:aacFile contents:nil attributes:nil];
+//    
+//    self.aacFileHandle = [NSFileHandle fileHandleForWritingAtPath:aacFile];
     
     self.rtmp = [[JCRtmp alloc] initWithPushURL:@"rtmp://192.168.10.253:1935/5showcam/stream111111"];
     [self.rtmp setDelegate:self];
     
-    self.jcH264Encoder = [[JCH264Encoder alloc] initWithJCLiveVideoQuality:JCLiveVideoQuality_Low2];
+    _videoCapture = [[JCVideoCapture alloc] init];
+    
+    self.jcH264Encoder = [[JCH264Encoder alloc] initWithJCLiveVideoQuality:JCLiveVideoQuality_Medium1];
     [self.jcH264Encoder setDelegate:self];
     
-    self.audioCapture = [[JCAudioCapture alloc] init];
-    self.audioEncoder = [[JCAACEncoder alloc] init];
-    [self.audioEncoder setDelegate:self];
+//    self.audioCapture = [[JCAudioCapture alloc] init];
+//    self.audioEncoder = [[JCAACEncoder alloc] init];
+//    [self.audioEncoder setDelegate:self];
 }
 
 - (void)viewDidLayoutSubviews {
@@ -88,9 +89,11 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
+    [self.rtmp connect];
+    
     __weak typeof(self) weakSelf = self;
-    [_videoCapture carmeraScanOriginBlock:^(CVImageBufferRef sampleBufferRef){
-//        [weakSelf.jcH264Encoder encodeVideoData:sampleBufferRef timeStamp:[weakSelf currentTimestamp]];
+    [_videoCapture carmeraScanOriginBlock:^(CVImageBufferRef sampleBufferRef) {
+        [weakSelf.jcH264Encoder encodeVideoData:sampleBufferRef timeStamp:[weakSelf currentTimestamp]];
     }];
     
 //    [self.audioCapture audioCaptureOriginBlock:^(AudioBufferList audioBufferList){
@@ -98,9 +101,8 @@
 //    }];
 
     [_videoCapture startRunning];
-    [self.audioCapture startRunning];
+//    [self.audioCapture startRunning];
     
-    [self.rtmp connect];
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
@@ -117,15 +119,8 @@
 #pragma mark event
 
 - (IBAction)onSwitch:(id)sender {
+    [_videoCapture setBeautyFace:NO];
 //    [_videoCapture swapFrontAndBackCameras];
-//    
-//    [_videoCapture stopRunning];
-//    [self.jcH264Encoder endVideoCompression];
-//    
-//    [_audioCapture stopRunning];
-//    
-//    [self.h264FileHandle closeFile];
-//    [self.aacFileHandle closeFile];
 }
 
 #pragma mark JCACCEncoderDelegate
@@ -138,14 +133,14 @@
 #pragma mark JCH264EncoderDelegate
 
 - (void)getEncoder:(JCH264Encoder *)encoder withVideoFrame:(JCFLVVideoFrame *)videoFrame {
-//    if (self.uploading) {
-//        [self.rtmp sendVideoFrame:videoFrame];
-//    }
+    if (self.uploading) {
+        [self.rtmp sendVideoFrame:videoFrame];
+    }
 }
 
 #pragma RTMPDelegate
 
-- (void)JCRtmp:(JCRtmp *)rtmp withJCRtmpConnectStatus:(JCLiveStatus)liveStatus;{
+- (void)JCRtmp:(JCRtmp *)rtmp withJCRtmpConnectStatus:(JCLiveStatus)liveStatus {
     if(liveStatus == JCLiveStatusConnect){
         if(!self.uploading){
             self.timestamp = 0;
@@ -181,7 +176,7 @@
 
 #pragma mark private
 
-- (uint64_t)currentTimestamp{
+- (uint64_t)currentTimestamp {
     dispatch_semaphore_wait(_lock, DISPATCH_TIME_FOREVER);
     uint64_t currentts = 0;
     if(_isFirstFrame == true) {

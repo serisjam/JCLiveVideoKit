@@ -8,6 +8,7 @@
 
 #import "JCVideoCapture.h"
 #import "GPUImage.h"
+#import "GPUImageBeautifyFilter.h"
 
 @interface JCVideoCaptureProperty ()
 
@@ -27,7 +28,7 @@
     if (self) {
         [self configSessionPreset:JCCaptureVideo640x480];
         self.videoDevicePosition = JCVideoCaptureDevicePositionBack;
-        self.videoCaptureFrameRate = 30;
+        self.videoCaptureFrameRate = 60;
     }
     
     return self;
@@ -39,9 +40,6 @@
 
 - (void)configSessionPreset:(JCCaptureVideoQuality)videoQualityLevel {
     switch (videoQualityLevel) {
-        case JCCaptureVideo480x360:
-            self.captureSessionPreset = AVCaptureSessionPresetMedium;
-            break;
         case JCCaptureVideo640x480:
             self.captureSessionPreset = AVCaptureSessionPreset640x480;
             break;
@@ -56,13 +54,20 @@
     }
 }
 
+- (BOOL)isNeedClip {
+    return [self.captureSessionPreset isEqualToString:AVCaptureSessionPreset640x480] ? YES : NO;
+}
+
 @end
 
 @interface JCVideoCapture () <GPUImageVideoCameraDelegate>
 
-@property(nonatomic, strong) GPUImageVideoCamera *videoCamera;
-@property(nonatomic, strong) GPUImageView *gpuImageView;
+@property (nonatomic, strong) GPUImageVideoCamera *videoCamera;
+@property (nonatomic, strong) GPUImageView *gpuImageView;
 @property (nonatomic, strong) cameraCaptureOriginDataBlock captureOriginDataBlock;
+
+@property(nonatomic, strong) GPUImageOutput<GPUImageInput> *filter;
+@property (nonatomic, strong) GPUImageCropFilter *cropfilter;
 
 @property (nonatomic, assign) UIView *embedView;
 
@@ -75,7 +80,9 @@
     self.captureOriginDataBlock = nil;
     [UIApplication sharedApplication].idleTimerDisabled = NO;
     [[NSNotificationCenter defaultCenter] removeObserver:self];
+    
     [_videoCamera stopCameraCapture];
+    _videoCamera = nil;
 }
 
 - (instancetype)init {
@@ -103,29 +110,18 @@
     _videoCamera.outputImageOrientation = UIDeviceOrientationPortrait;
     _videoCamera.horizontallyMirrorFrontFacingCamera = NO;
     _videoCamera.horizontallyMirrorRearFacingCamera = NO;
-    _videoCamera.frameRate = 24;
-    
-    GPUImageFilter *filter = [[GPUImageFilter alloc] init];
-    [_videoCamera addTarget:filter];
-    
-    __weak typeof(self) _self = self;
-    [filter setFrameProcessingCompletionBlock:^(GPUImageOutput *output, CMTime time){
-        [_self processVideo:output];
-    }];
-    
+    _videoCamera.frameRate = (int32_t)30;
+
     _gpuImageView = [[GPUImageView alloc] initWithFrame:[UIScreen mainScreen].bounds];
     [_gpuImageView setFillMode:kGPUImageFillModePreserveAspectRatioAndFill];
     [_gpuImageView setAutoresizingMask:UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight];
     [_gpuImageView setInputRotation:kGPUImageFlipHorizonal atIndex:0];
-    
-    [filter addTarget:_gpuImageView];
+
+    self.beautyFace = YES;
     
     //进入后台或者切换前台的通知
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(willEnterBackground:) name:UIApplicationWillResignActiveNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(willEnterForeground:) name:UIApplicationDidBecomeActiveNotification object:nil];
-    
-    dispatch_queue_t dispatchQueue;
-    dispatchQueue = dispatch_queue_create("com.jam.camera", NULL);
 }
 
 #pragma mark -- Custom Method
@@ -136,19 +132,6 @@
         CVPixelBufferRef pixelBuffer = [imageFramebuffer pixelBuffer];
         if (_self.captureOriginDataBlock) {
             _self.captureOriginDataBlock(pixelBuffer);
-        }
-    }
-}
-
-
-#pragma mark GPUImageVideoCameraDelegate
-
-- (void)willOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer {
-    __weak typeof(self) _self = self;
-    @autoreleasepool {
-        CVImageBufferRef imageBuffer = (CVImageBufferRef)CMSampleBufferGetImageBuffer(sampleBuffer);
-        if (_self.captureOriginDataBlock) {
-            _self.captureOriginDataBlock(imageBuffer);
         }
     }
 }
@@ -174,7 +157,56 @@
     _captureOriginDataBlock = cameraCaptureOriginBlock;
 }
 
+- (void)setBeautyFace:(BOOL)beautyFace {
+    
+    _beautyFace = beautyFace;
+    [_filter removeAllTargets];
+    [_cropfilter removeAllTargets];
+    [_videoCamera removeAllTargets];
+    
+    if (_beautyFace) {
+        
+        _filter = [[GPUImageBeautifyFilter alloc] init];
+        
+        __weak typeof(self) _self = self;
+        [_filter setFrameProcessingCompletionBlock:^(GPUImageOutput *output, CMTime time){
+            [_self processVideo:output];
+        }];
+        
+    } else {
+        _filter = [[GPUImageEmptyFilter alloc] init];
+        
+        __weak typeof(self) _self = self;
+        [_filter setFrameProcessingCompletionBlock:^(GPUImageOutput *output, CMTime time){
+            [_self processVideo:output];
+        }];
+    }
+    
+    if ([_videoCamera.captureSessionPreset isEqualToString:AVCaptureSessionPreset640x480]) {
+        _cropfilter = [[GPUImageCropFilter alloc] initWithCropRegion:CGRectMake(0.125, 0, 0.75, 1)];
+        [_videoCamera addTarget:_cropfilter];
+        [_cropfilter addTarget:_filter];
+    } else {
+        [_videoCamera addTarget:_filter];
+    }
+    
+    [_filter addTarget:_gpuImageView];
+
+    if (_videoCamera.cameraPosition == AVCaptureDevicePositionFront) {
+        [_gpuImageView setInputRotation:kGPUImageFlipHorizonal atIndex:0];
+    } else {
+        [_gpuImageView setInputRotation:kGPUImageNoRotation atIndex:0];
+    }
+}
+
 - (void)swapFrontAndBackCameras {
+    [_videoCamera rotateCamera];
+    
+    if (_videoCamera.cameraPosition == AVCaptureDevicePositionFront) {
+        [_gpuImageView setInputRotation:kGPUImageFlipHorizonal atIndex:0];
+    } else {
+        [_gpuImageView setInputRotation:kGPUImageNoRotation atIndex:0];
+    }
 }
 
 #pragma mark  NSNotification

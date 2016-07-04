@@ -60,43 +60,44 @@
 - (void)configPropertiesWithJCLiveVideoQuality:(JCLiveVideoQuality)liveVideoQuality {
     switch (liveVideoQuality) {
         case JCLiveVideoQuality_Low1: {
-            self.width = 360;
-            self.height = 480;
+            self.width = 480;
+            self.height = 640;
             self.videoFrameRate = 15;
             self.videoMaxFrameRate = 20;
             self.videoMinFrameRate = 12;
             self.videoBitRate = 500 * 1024;
-            self.videoMaxBitRate = 600 * 1024;
+            self.videoMaxBitRate = 700 * 1024;
             self.videoMinBitRate = 400 * 1024;
         }
             break;
         case JCLiveVideoQuality_Low2: {
-            self.width = 360;
-            self.height = 480;
-            self.videoFrameRate = 24;
-            self.videoMaxFrameRate = 30;
-            self.videoMinFrameRate = 15;
-            self.videoBitRate = 500 * 1024;
-            self.videoMaxBitRate = 600 * 1024;
-            self.videoMinBitRate = 400 * 1024;
-        }
-            break;
-        case JCLiveVideoQuality_Medium1: {
-            self.width = 480;
-            self.height = 640;
-            self.videoFrameRate = 15;
-            self.videoMaxFrameRate = 20;
-            self.videoMinFrameRate = 12;
-            self.videoBitRate = 600 * 1024;
-            self.videoMaxBitRate = 700 * 1024;
-            self.videoMinBitRate = 500 * 1024;
-        }
-            break;
-        case JCLiveVideoQuality_Medium2: {
             self.width = 480;
             self.height = 640;
             self.videoFrameRate = 24;
             self.videoMaxFrameRate = 24;
+            self.videoMinFrameRate = 15;
+            self.videoBitRate = 600 * 1024;
+            self.videoMaxBitRate = 900 * 1024;
+            self.videoMinBitRate = 500 * 1024;
+        }
+            break;
+        case JCLiveVideoQuality_Medium1: {
+            self.width = 540;
+            self.height = 960;
+            self.videoFrameRate = 15;
+            self.videoMaxFrameRate = 20;
+            self.videoMinFrameRate = 12;
+            self.videoBitRate = 800 * 1024;
+            self.videoMaxBitRate = 900 * 1024;
+            self.videoMinBitRate = 700 * 1024;
+            
+        }
+            break;
+        case JCLiveVideoQuality_Medium2: {
+            self.width = 540;
+            self.height = 960;
+            self.videoFrameRate = 24;
+            self.videoMaxFrameRate = 30;
             self.videoMinFrameRate = 15;
             self.videoBitRate = 800 * 1024;
             self.videoMaxBitRate = 900 * 1024;
@@ -104,29 +105,6 @@
         }
             break;
         case JCLiveVideoQuality_High1: {
-            self.width = 540;
-            self.height = 960;
-            self.videoFrameRate = 15;
-            self.videoMaxFrameRate = 20;
-            self.videoMinFrameRate = 12;
-            self.videoBitRate = 1000 * 1024;
-            self.videoMaxBitRate = 1100 * 1024;
-            self.videoMinBitRate = 800 * 1024;
-            
-        }
-            break;
-        case JCLiveVideoQuality_High2: {
-            self.width = 540;
-            self.height = 960;
-            self.videoFrameRate = 24;
-            self.videoMaxFrameRate = 30;
-            self.videoMinFrameRate = 15;
-            self.videoBitRate = 1000 * 1024;
-            self.videoMaxBitRate = 1100 * 1024;
-            self.videoMinBitRate = 800 * 1024;
-        }
-            break;
-        case JCLiveVideoQuality_Best1: {
             self.width = 720;
             self.height = 1280;
             self.videoFrameRate = 15;
@@ -137,7 +115,7 @@
             self.videoMinBitRate = 800 * 1024;
         }
             break;
-        case JCLiveVideoQuality_Best2: {
+        case JCLiveVideoQuality_High2: {
             self.width = 720;
             self.height = 1280;
             self.videoFrameRate = 24;
@@ -243,19 +221,16 @@
         }
         
         status = VTSessionSetProperty(_compressionSession, kVTCompressionPropertyKey_MaxKeyFrameInterval, (__bridge CFTypeRef)@(liveVideoProperties.videoMaxKeyframeInterval));
-        status = VTSessionSetProperty(_compressionSession, kVTCompressionPropertyKey_MaxKeyFrameIntervalDuration, (__bridge CFTypeRef)@(2));
+        status = VTSessionSetProperty(_compressionSession, kVTCompressionPropertyKey_MaxKeyFrameIntervalDuration, (__bridge CFTypeRef)@(liveVideoProperties.videoMaxKeyframeInterval));
+        status = VTSessionSetProperty(_compressionSession, kVTCompressionPropertyKey_ExpectedFrameRate, (__bridge CFTypeRef)@(liveVideoProperties.videoFrameRate));
         status = VTSessionSetProperty(_compressionSession, kVTCompressionPropertyKey_AverageBitRate, (__bridge CFTypeRef)@(liveVideoProperties.videoBitRate));
         NSArray *dataLimits = @[@(liveVideoProperties.videoBitRate*1.5/8), @(1)];
         status = VTSessionSetProperty(_compressionSession, kVTCompressionPropertyKey_DataRateLimits, (__bridge CFArrayRef)dataLimits);
-        status = VTSessionSetProperty(_compressionSession, kVTCompressionPropertyKey_Quality, (__bridge CFTypeRef)@(1.0));
-        status = VTSessionSetProperty(_compressionSession, kVTCompressionPropertyKey_MoreFramesBeforeStart, kCFBooleanTrue);
-        status = VTSessionSetProperty(_compressionSession, kVTCompressionPropertyKey_MoreFramesAfterEnd, kCFBooleanTrue);
-        status = VTSessionSetProperty(_compressionSession, kVTCompressionPropertyKey_ProfileLevel, kVTProfileLevel_H264_Main_AutoLevel);
-        status = VTSessionSetProperty(_compressionSession, kVTCompressionPropertyKey_H264EntropyMode, kVTH264EntropyMode_CABAC);
-        status = VTSessionSetProperty(_compressionSession, kVTCompressionPropertyKey_MaxFrameDelayCount, (__bridge CFTypeRef)@(liveVideoProperties.videoMaxFrameRate));
         status = VTSessionSetProperty(_compressionSession, kVTCompressionPropertyKey_RealTime, kCFBooleanFalse);
-        status = VTSessionSetProperty(_compressionSession, kVTCompressionPropertyKey_ExpectedFrameRate, (__bridge CFTypeRef)@(liveVideoProperties.videoFrameRate));
-        
+        status = VTSessionSetProperty(_compressionSession, kVTCompressionPropertyKey_ProfileLevel, kVTProfileLevel_H264_Main_AutoLevel);
+        status = VTSessionSetProperty(_compressionSession, kVTCompressionPropertyKey_AllowFrameReordering, kCFBooleanFalse);
+        status = VTSessionSetProperty(_compressionSession, kVTCompressionPropertyKey_H264EntropyMode, kVTH264EntropyMode_CABAC);
+
         VTCompressionSessionPrepareToEncodeFrames(_compressionSession);
     });
 }
@@ -325,11 +300,12 @@ static void VideoCompressonOutputCallback(void *outputCallbackRefCon, void *sour
             
             NALUnitLength = CFSwapInt32BigToHost(NALUnitLength);
             
-            NSData *data = [[NSData alloc] initWithBytes:dataPointer+bufferOffset+AVCCHeaderLength length:NALUnitLength];
-            JCFLVVideoFrame *videoFrame = [[JCFLVVideoFrame alloc] initWithSpsData:encoder.sps withPPSData:encoder.pps andBodyData:data];
-
+            JCFLVVideoFrame *videoFrame = [JCFLVVideoFrame new];
+            videoFrame.data = [[NSData alloc] initWithBytes:(dataPointer + bufferOffset + AVCCHeaderLength) length:NALUnitLength];
             videoFrame.isKeyFrame = isKeyFrame;
             videoFrame.timestamp = timeStamp;
+            videoFrame.spsData = encoder.sps;
+            videoFrame.ppsData = encoder.pps;
             
             if ([encoder.delegate respondsToSelector:@selector(getEncoder:withVideoFrame:)]) {
                 [encoder.delegate getEncoder:encoder withVideoFrame:videoFrame];

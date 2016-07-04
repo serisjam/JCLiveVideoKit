@@ -126,19 +126,98 @@
     JCFLVVideoFrame *videoFrame = [_frameBuffer getFirstVideoFrame];
     
     if (videoFrame == nil) {
-        return;
+        return ;
     }
     
     if (!_isVideoHeader) {
         _isVideoHeader = YES;
-        unsigned char *videoHeaderData = [videoFrame getHeaderData];
-        [self sendPacket:RTMP_PACKET_TYPE_VIDEO data:videoHeaderData size:videoFrame.headerLength nTimestamp:videoFrame.timestamp];
-        free(videoHeaderData);
+        [self sendVideoHeader:videoFrame];
     } else {
-        unsigned char *videoBodyData = [videoFrame getBodyData];
-        [self sendPacket:RTMP_PACKET_TYPE_VIDEO data:videoBodyData size:videoFrame.bodyLength nTimestamp:videoFrame.timestamp];
-        free(videoBodyData);
+        [self sendVideoData:videoFrame];
     }
+}
+
+//flv视频格式AVC头部封装
+//原理来自 http://www.cnblogs.com/chef/archive/2012/07/18/2597279.html
+- (void)sendVideoHeader:(JCFLVVideoFrame *)videoFrame {
+    if (!videoFrame.spsData || !videoFrame.ppsData) {
+        return ;
+    }
+    
+    unsigned char * body=NULL;
+    NSInteger iIndex = 0;
+    NSInteger rtmpLength = 1024;
+    const char *sps = videoFrame.spsData.bytes;
+    const char *pps = videoFrame.ppsData.bytes;
+    NSInteger sps_len = videoFrame.spsData.length;
+    NSInteger pps_len = videoFrame.ppsData.length;
+    
+    body = (unsigned char*)malloc(rtmpLength);
+    memset(body,0,rtmpLength);
+    
+    body[iIndex++] = 0x17;
+    body[iIndex++] = 0x00;
+    
+    body[iIndex++] = 0x00;
+    body[iIndex++] = 0x00;
+    body[iIndex++] = 0x00;
+    
+    body[iIndex++] = 0x01;
+    body[iIndex++] = sps[1];
+    body[iIndex++] = sps[2];
+    body[iIndex++] = sps[3];
+    body[iIndex++] = 0xff;
+    
+    /*sps*/
+    body[iIndex++]   = 0xe1;
+    body[iIndex++] = (sps_len >> 8) & 0xff;
+    body[iIndex++] = sps_len & 0xff;
+    memcpy(&body[iIndex],sps,sps_len);
+    iIndex +=  sps_len;
+    
+    /*pps*/
+    body[iIndex++]   = 0x01;
+    body[iIndex++] = (pps_len >> 8) & 0xff;
+    body[iIndex++] = (pps_len) & 0xff;
+    memcpy(&body[iIndex], pps, pps_len);
+    iIndex +=  pps_len;
+    
+    [self sendPacket:RTMP_PACKET_TYPE_VIDEO data:body size:iIndex nTimestamp:videoFrame.timestamp];
+    
+    free(body);
+}
+
+//flv视频格式AVC头部封装
+//原理来自 http://www.cnblogs.com/chef/archive/2012/07/18/2597279.html
+- (void)sendVideoData:(JCFLVVideoFrame *)videoFrame {
+    
+    if(!videoFrame.data || videoFrame.data.length < 11) {
+        return ;
+    }
+    
+    NSInteger i = 0;
+    NSInteger rtmpLength = videoFrame.data.length+9;
+    unsigned char *body = (unsigned char*)malloc(rtmpLength);
+    memset(body,0,rtmpLength);
+    
+    if(videoFrame.isKeyFrame){
+        body[i++] = 0x17;// 1:Iframe  7:AVC
+    } else{
+        body[i++] = 0x27;// 2:Pframe  7:AVC
+    }
+    body[i++] = 0x01;// AVC NALU
+    body[i++] = 0x00;
+    body[i++] = 0x00;
+    body[i++] = 0x00;
+    body[i++] = (videoFrame.data.length >> 24) & 0xff;
+    body[i++] = (videoFrame.data.length >> 16) & 0xff;
+    body[i++] = (videoFrame.data.length >>  8) & 0xff;
+    body[i++] = (videoFrame.data.length ) & 0xff;
+    memcpy(&body[i], videoFrame.data.bytes, videoFrame.data.length);
+    
+    [self sendPacket:RTMP_PACKET_TYPE_VIDEO data:body size:rtmpLength nTimestamp:videoFrame.timestamp];
+    
+    free(body);
 }
 
 -(NSInteger) sendPacket:(unsigned int)nPacketType data:(unsigned char *)data size:(NSInteger) size nTimestamp:(uint64_t) nTimestamp{

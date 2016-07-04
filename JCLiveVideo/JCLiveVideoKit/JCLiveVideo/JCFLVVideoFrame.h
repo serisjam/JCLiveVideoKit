@@ -13,14 +13,8 @@
 @property (nonatomic, assign) uint64_t timestamp;
 @property (nonatomic, assign) BOOL isKeyFrame;
 
-//flv格式tag header长度
-@property (nonatomic, assign, readonly) NSInteger headerLength;
-//flv格式tag data长度
-@property (nonatomic, assign, readonly) NSInteger bodyLength;
-
-- (instancetype)initWithSpsData:(NSData *)sps withPPSData:(NSData *)pps andBodyData:(NSData *)data;
-
-- (unsigned char *)getHeaderData;
-- (unsigned char *)getBodyData;
+@property (nonatomic, strong) NSData *data;
+@property (nonatomic, strong) NSData *spsData;
+@property (nonatomic, strong) NSData *ppsData;
 
 @end

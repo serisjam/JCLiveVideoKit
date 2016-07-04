@@ -19,7 +19,7 @@
 @end
 
 //最大保存帧数
-static const NSInteger max = 1000;
+static const NSInteger max = 200;
 //每10帧发送1帧
 static const NSUInteger defaultMaxBuffers = 10;
 
@@ -44,7 +44,7 @@ static const NSUInteger defaultMaxBuffers = 10;
 }
 
 - (void)addVideoFrame:(JCFLVVideoFrame *)videoFrame {
-
+    
     dispatch_semaphore_wait(_lock, DISPATCH_TIME_FOREVER);
     if (self.sampleBuffers.count < defaultMaxBuffers) {
         [self.sampleBuffers addObject:videoFrame];

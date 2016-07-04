@@ -11,7 +11,6 @@
 
 //采样分辨率
 typedef NS_ENUM(NSUInteger, JCCaptureVideoQuality) {
-    JCCaptureVideo480x360,
     JCCaptureVideo640x480,
     JCCaptureVideo960x540,
     JCCaptureVideo1280x720
@@ -31,6 +30,9 @@ typedef NS_ENUM(NSInteger, JCVideoCaptureDevicePosition) {
 //采集帧率 单位帧
 @property (nonatomic, assign) NSInteger videoCaptureFrameRate;
 
+////如果JCCaptureVideoQuality为640*480需要添加一个剪裁滤镜否则图像会变形
+@property (nonatomic, assign) BOOL isNeedClip;
+
 + (JCVideoCaptureProperty *)defaultCaptureProperty;
 
 @end
@@ -40,6 +42,9 @@ typedef void(^cameraCaptureOriginDataBlock)(CVImageBufferRef sampleBufferRef);
 @interface JCVideoCapture : NSObject
 
 - (instancetype)initWithJCCaptureVideoProperty:(JCVideoCaptureProperty *)captureProperty;
+
+//开启美颜效果默认开启
+@property (nonatomic, assign) BOOL beautyFace;
 
 - (void)startRunning;
 - (void)stopRunning;

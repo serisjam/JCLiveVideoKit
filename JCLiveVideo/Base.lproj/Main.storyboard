@@ -40,7 +40,7 @@
                                         </connections>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" textLabel="OBn-Fz-Rmd" style="IBUITableViewCellStyleDefault" id="lLz-Qt-qZB">
-                                        <rect key="frame" x="0.0" y="64" width="600" height="44"/>
+                                        <rect key="frame" x="0.0" y="108" width="600" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="lLz-Qt-qZB" id="bPb-6v-Aak">
                                             <rect key="frame" x="0.0" y="0.0" width="600" height="43"/>
@@ -101,6 +101,7 @@
                         <viewControllerLayoutGuide type="bottom" id="ToI-PW-hHQ"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="FIr-2c-8mo">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="x9u-UQ-L8A">
@@ -163,10 +164,10 @@
                                 <exclude reference="TSo-jg-MmJ"/>
                             </mask>
                             <mask key="constraints">
-                                <exclude reference="g7a-2s-G7N"/>
                                 <exclude reference="iOC-3r-wfj"/>
                                 <exclude reference="opM-JB-Ec8"/>
                                 <exclude reference="Wx1-Ng-KMG"/>
+                                <exclude reference="g7a-2s-G7N"/>
                             </mask>
                         </variation>
                         <variation key="heightClass=regular-widthClass=compact">
@@ -175,10 +176,10 @@
                                 <include reference="TSo-jg-MmJ"/>
                             </mask>
                             <mask key="constraints">
-                                <include reference="g7a-2s-G7N"/>
                                 <include reference="iOC-3r-wfj"/>
                                 <include reference="opM-JB-Ec8"/>
                                 <include reference="Wx1-Ng-KMG"/>
+                                <include reference="g7a-2s-G7N"/>
                             </mask>
                         </variation>
                     </view>

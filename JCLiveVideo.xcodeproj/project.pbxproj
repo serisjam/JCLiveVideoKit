@@ -24,8 +24,8 @@
 		1652A2D72F134F7B52B99F9A /* libPods-JCLiveVideo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 34FB9414F82AACFE2409E85B /* libPods-JCLiveVideo.a */; };
 		396151B71D20C6D1009B40FC /* AudioCaptureViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 396151B61D20C6D1009B40FC /* AudioCaptureViewController.m */; };
 		396151BA1D20F88C009B40FC /* JCAACEncoder.m in Sources */ = {isa = PBXBuildFile; fileRef = 396151B91D20F88C009B40FC /* JCAACEncoder.m */; };
-		39826CF01D2648A000024B77 /* GPUImageBeautyFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 39826CED1D2648A000024B77 /* GPUImageBeautyFilter.m */; };
-		39826CF11D2648A000024B77 /* GPUImageEmptyFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 39826CEF1D2648A000024B77 /* GPUImageEmptyFilter.m */; };
+		3982BAF21D2A677B00CA801A /* GPUImageBeautifyFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 3982BAED1D2A677B00CA801A /* GPUImageBeautifyFilter.m */; };
+		3982BAF41D2A677B00CA801A /* GPUImageEmptyFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 3982BAF11D2A677B00CA801A /* GPUImageEmptyFilter.m */; };
 		39CE04B51D239EAE00C20D74 /* JCFLVVideoFrame.m in Sources */ = {isa = PBXBuildFile; fileRef = 39CE04B41D239EAE00C20D74 /* JCFLVVideoFrame.m */; };
 		39CE04B81D239EBE00C20D74 /* JCFLVAudioFrame.m in Sources */ = {isa = PBXBuildFile; fileRef = 39CE04B71D239EBE00C20D74 /* JCFLVAudioFrame.m */; };
 		39D7B6051D263F8700300F66 /* JCRtmp.m in Sources */ = {isa = PBXBuildFile; fileRef = 39D7B6001D263F8700300F66 /* JCRtmp.m */; };
@@ -62,10 +62,10 @@
 		396151B61D20C6D1009B40FC /* AudioCaptureViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AudioCaptureViewController.m; sourceTree = "<group>"; };
 		396151B81D20F88C009B40FC /* JCAACEncoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JCAACEncoder.h; sourceTree = "<group>"; };
 		396151B91D20F88C009B40FC /* JCAACEncoder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JCAACEncoder.m; sourceTree = "<group>"; };
-		39826CEC1D2648A000024B77 /* GPUImageBeautyFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GPUImageBeautyFilter.h; sourceTree = "<group>"; };
-		39826CED1D2648A000024B77 /* GPUImageBeautyFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GPUImageBeautyFilter.m; sourceTree = "<group>"; };
-		39826CEE1D2648A000024B77 /* GPUImageEmptyFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GPUImageEmptyFilter.h; sourceTree = "<group>"; };
-		39826CEF1D2648A000024B77 /* GPUImageEmptyFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GPUImageEmptyFilter.m; sourceTree = "<group>"; };
+		3982BAEC1D2A677B00CA801A /* GPUImageBeautifyFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GPUImageBeautifyFilter.h; sourceTree = "<group>"; };
+		3982BAED1D2A677B00CA801A /* GPUImageBeautifyFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GPUImageBeautifyFilter.m; sourceTree = "<group>"; };
+		3982BAF01D2A677B00CA801A /* GPUImageEmptyFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GPUImageEmptyFilter.h; sourceTree = "<group>"; };
+		3982BAF11D2A677B00CA801A /* GPUImageEmptyFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GPUImageEmptyFilter.m; sourceTree = "<group>"; };
 		39CE04B31D239EAE00C20D74 /* JCFLVVideoFrame.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JCFLVVideoFrame.h; sourceTree = "<group>"; };
 		39CE04B41D239EAE00C20D74 /* JCFLVVideoFrame.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JCFLVVideoFrame.m; sourceTree = "<group>"; };
 		39CE04B61D239EBE00C20D74 /* JCFLVAudioFrame.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JCFLVAudioFrame.h; sourceTree = "<group>"; };
@@ -215,10 +215,10 @@
 		39826CEB1D2648A000024B77 /* Beauty */ = {
 			isa = PBXGroup;
 			children = (
-				39826CEC1D2648A000024B77 /* GPUImageBeautyFilter.h */,
-				39826CED1D2648A000024B77 /* GPUImageBeautyFilter.m */,
-				39826CEE1D2648A000024B77 /* GPUImageEmptyFilter.h */,
-				39826CEF1D2648A000024B77 /* GPUImageEmptyFilter.m */,
+				3982BAEC1D2A677B00CA801A /* GPUImageBeautifyFilter.h */,
+				3982BAED1D2A677B00CA801A /* GPUImageBeautifyFilter.m */,
+				3982BAF01D2A677B00CA801A /* GPUImageEmptyFilter.h */,
+				3982BAF11D2A677B00CA801A /* GPUImageEmptyFilter.m */,
 			);
 			path = Beauty;
 			sourceTree = "<group>";
@@ -396,14 +396,14 @@
 				0DACD7D31D1E274800C212A5 /* ViewController.m in Sources */,
 				0DACD7D01D1E274800C212A5 /* AppDelegate.m in Sources */,
 				0DFA53F11D1EDE9D004CFF11 /* JCAudioCapture.m in Sources */,
+				3982BAF21D2A677B00CA801A /* GPUImageBeautifyFilter.m in Sources */,
 				396151BA1D20F88C009B40FC /* JCAACEncoder.m in Sources */,
 				0D65BC851D1E41E3005F13FB /* JCH264Encoder.m in Sources */,
 				0DACD7CD1D1E274800C212A5 /* main.m in Sources */,
+				3982BAF41D2A677B00CA801A /* GPUImageEmptyFilter.m in Sources */,
 				39CE04B81D239EBE00C20D74 /* JCFLVAudioFrame.m in Sources */,
 				39D7B6051D263F8700300F66 /* JCRtmp.m in Sources */,
-				39826CF01D2648A000024B77 /* GPUImageBeautyFilter.m in Sources */,
 				396151B71D20C6D1009B40FC /* AudioCaptureViewController.m in Sources */,
-				39826CF11D2648A000024B77 /* GPUImageEmptyFilter.m in Sources */,
 				39CE04B51D239EAE00C20D74 /* JCFLVVideoFrame.m in Sources */,
 				39D7B6061D263F8700300F66 /* JCRtmpConnectStatus.m in Sources */,
 				39D7B6071D263F8700300F66 /* JCRtmpFrameBuffer.m in Sources */,
