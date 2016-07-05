@@ -7,13 +7,16 @@
 //
 
 #import <Foundation/Foundation.h>
+
 #import "JCFLVVideoFrame.h"
+#import "JCFLVAudioFrame.h"
 
 @interface JCRtmpFrameBuffer : NSObject
 
 - (NSInteger)getCount;
 - (void)addVideoFrame:(JCFLVVideoFrame *)videoFrame;
+- (void)addAudioFrame:(JCFLVAudioFrame *)audioFrame;
 
-- (JCFLVVideoFrame *)getFirstVideoFrame;
+- (id)getFirstFrame;
 
 @end

@@ -31,9 +31,6 @@
 @property (nonatomic, strong) JCAudioCapture *audioCapture;
 @property (nonatomic, strong) JCAACEncoder *audioEncoder;
 
-@property (nonatomic, strong) NSFileHandle *h264FileHandle;
-@property (nonatomic, strong) NSFileHandle *aacFileHandle;
-
 @property (nonatomic, strong) JCRtmp *rtmp;
 
 @property (nonatomic, assign) uint64_t timestamp;
@@ -50,39 +47,23 @@
     // Do any additional setup after loading the view, typically from a nib.
     _lock = dispatch_semaphore_create(1);
     
-//    //打开文件句柄, 记录h264文件
-//    NSFileManager *fileManager = [NSFileManager defaultManager];
-//    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-//    NSString *documentsDirectory = [paths objectAtIndex:0];
-//    
-//    NSString *h264File = [documentsDirectory stringByAppendingPathComponent:@"test.h264"];
-//    [fileManager removeItemAtPath:h264File error:nil];
-//    [fileManager createFileAtPath:h264File contents:nil attributes:nil];
-//    
-//    self.h264FileHandle = [NSFileHandle fileHandleForWritingAtPath:h264File];
-//    
-//    NSString *aacFile = [documentsDirectory stringByAppendingPathComponent:@"test.aac"];
-//    [fileManager removeItemAtPath:aacFile error:nil];
-//    [fileManager createFileAtPath:aacFile contents:nil attributes:nil];
-//    
-//    self.aacFileHandle = [NSFileHandle fileHandleForWritingAtPath:aacFile];
-    
     self.rtmp = [[JCRtmp alloc] initWithPushURL:@"rtmp://192.168.10.253:1935/5showcam/stream111111"];
     [self.rtmp setDelegate:self];
     
+    //视频捕获及h.264压缩
     _videoCapture = [[JCVideoCapture alloc] init];
-    
     self.jcH264Encoder = [[JCH264Encoder alloc] initWithJCLiveVideoQuality:JCLiveVideoQuality_Medium1];
     [self.jcH264Encoder setDelegate:self];
     
-//    self.audioCapture = [[JCAudioCapture alloc] init];
-//    self.audioEncoder = [[JCAACEncoder alloc] init];
-//    [self.audioEncoder setDelegate:self];
+    //音频捕获及aac压缩
+    _audioCapture = [[JCAudioCapture alloc] init];
+    self.audioEncoder = [[JCAACEncoder alloc] init];
+    [self.audioEncoder setDelegate:self];
+    
 }
 
 - (void)viewDidLayoutSubviews {
     [super viewDidLayoutSubviews];
-    
     [_videoCapture embedPreviewInView:self.view];
 }
 
@@ -96,19 +77,19 @@
         [weakSelf.jcH264Encoder encodeVideoData:sampleBufferRef timeStamp:[weakSelf currentTimestamp]];
     }];
     
-//    [self.audioCapture audioCaptureOriginBlock:^(AudioBufferList audioBufferList){
-//        [weakSelf.audioEncoder encodeAudioData:audioBufferList timeStamp:[weakSelf currentTimestamp]];
-//    }];
+    [self.audioCapture audioCaptureOriginBlock:^(AudioBufferList audioBufferList){
+        [weakSelf.audioEncoder encodeAudioData:audioBufferList timeStamp:[weakSelf currentTimestamp]];
+    }];
 
     [_videoCapture startRunning];
-//    [self.audioCapture startRunning];
-    
+    [_audioCapture startRunning];
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     
     [_videoCapture stopRunning];
+    [_audioCapture stopRunning];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -125,9 +106,10 @@
 
 #pragma mark JCACCEncoderDelegate
 
-- (void)getRawAACData:(NSData *)aacData withADTSHeaderData:(NSData *)adtsHeaderData {
-    [self.aacFileHandle writeData:adtsHeaderData];
-    [self.aacFileHandle writeData:aacData];
+- (void)getAudioEncoder:(JCAACEncoder *)audioEncoder withAuidoFrame:(JCFLVAudioFrame *)audioFrame {
+    if (self.uploading) {
+        [self.rtmp sendAudioFrame:audioFrame];
+    }
 }
 
 #pragma mark JCH264EncoderDelegate
@@ -149,30 +131,6 @@
         }
     }
 }
-
-//- (void)getEncodedData:(NSData *)data isKeyFrame:(BOOL)isKeyFrame {
-//    
-//    if (self.h264FileHandle != NULL) {
-//        const char bytes[] = "\x00\x00\x00\x01";
-//        size_t length = (sizeof bytes) - 1; //string literals have implicit trailing '\0'
-//        NSData *ByteHeader = [NSData dataWithBytes:bytes length:length];
-//        [self.h264FileHandle writeData:ByteHeader];
-//        [self.h264FileHandle writeData:data];
-//    }
-//}
-//
-//- (void)getSpsData:(NSData *)spsData withPpsData:(NSData *)ppsData {
-//    
-//    if (self.h264FileHandle != NULL) {
-//        const char bytes[] = "\x00\x00\x00\x01";
-//        size_t length = (sizeof bytes) - 1; //string literals have implicit trailing '\0'
-//        NSData *ByteHeader = [NSData dataWithBytes:bytes length:length];
-//        [self.h264FileHandle writeData:ByteHeader];
-//        [self.h264FileHandle writeData:spsData];
-//        [self.h264FileHandle writeData:ByteHeader];
-//        [self.h264FileHandle writeData:ppsData];
-//    }
-//}
 
 #pragma mark private
 

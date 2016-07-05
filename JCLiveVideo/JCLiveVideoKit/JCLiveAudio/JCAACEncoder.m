@@ -51,11 +51,20 @@
         return ;
     }
     
-    NSData *rawAAC = [NSData dataWithBytes:outBufferList.mBuffers[0].mData length:outBufferList.mBuffers[0].mDataByteSize];
-    NSData *adtsHeader = [self adtsDataForPacketLength:rawAAC.length];
+    JCFLVAudioFrame *audioFrame = [JCFLVAudioFrame new];
+    audioFrame.timestamp = timeStamp;
     
-    if ([self.delegate respondsToSelector:@selector(getRawAACData:withADTSHeaderData:)]) {
-        [self.delegate getRawAACData:rawAAC withADTSHeaderData:adtsHeader];
+    audioFrame.contentData = [NSData dataWithBytes:self.aacBuf length:outBufferList.mBuffers[0].mDataByteSize];
+    
+    const char bytes[] = "\x12\x10";
+    audioFrame.audioInfo = [NSData dataWithBytes:bytes length:2];
+    
+//  顺序写入头和源AAC到指定文件即可播放AAC
+//  NSData *adtsHeader = [self adtsDataForPacketLength:rawAAC.length];
+//  NSData *rawAAC = [NSData dataWithBytes:outBufferList.mBuffers[0].mData length:outBufferList.mBuffers[0].mDataByteSize];
+
+    if ([self.delegate respondsToSelector:@selector(getAudioEncoder:withAuidoFrame:)]) {
+        [self.delegate getAudioEncoder:self withAuidoFrame:audioFrame];
     }
 }
 
@@ -77,12 +86,16 @@
     inputFormat.mBytesPerFrame = inputFormat.mBitsPerChannel / 8 * inputFormat.mChannelsPerFrame;
     inputFormat.mBytesPerPacket = inputFormat.mBytesPerFrame * inputFormat.mFramesPerPacket;
     
-    AudioStreamBasicDescription outputFormat; //这里开始是输出音频格式
+    //这里开始是输出音频格式
+    AudioStreamBasicDescription outputFormat;
     memset(&outputFormat, 0, sizeof(outputFormat));
-    outputFormat.mSampleRate       = inputFormat.mSampleRate; //采样率保持一致
-    outputFormat.mFormatID         = kAudioFormatMPEG4AAC;    //AAC编码 kAudioFormatMPEG4AAC kAudioFormatMPEG4AAC_HE_V2
+    //采样率保持一致
+    outputFormat.mSampleRate       = inputFormat.mSampleRate;
+    //AAC编码 kAudioFormatMPEG4AAC kAudioFormatMPEG4AAC_HE_V2
+    outputFormat.mFormatID         = kAudioFormatMPEG4AAC;
     outputFormat.mChannelsPerFrame = 2;
-    outputFormat.mFramesPerPacket  = 1024;                    //AAC一帧是1024个字节
+    //AAC一帧是1024个字节
+    outputFormat.mFramesPerPacket  = 1024;
     
     const OSType subtype = kAudioFormatMPEG4AAC;
     AudioClassDescription requestedCodecs[2] = {
@@ -99,7 +112,6 @@
     };
     OSStatus result = AudioConverterNewSpecific(&inputFormat, &outputFormat, 2, requestedCodecs, &_m_converter);
     
-    
     if(result != noErr) return NO;
     
     return YES;
@@ -107,6 +119,7 @@
 
 #pragma mark -- AudioCallBack
 //AudioConverterFillComplexBuffer 编码过程中，会要求这个函数来填充输入数据，也就是原始PCM数据
+
 OSStatus inputDataProc(AudioConverterRef inConverter, UInt32 *ioNumberDataPackets, AudioBufferList *ioData,AudioStreamPacketDescription **outDataPacketDescription, void *inUserData) {
     AudioBufferList bufferList = *(AudioBufferList*)inUserData;
     ioData->mBuffers[0].mNumberChannels = 1;

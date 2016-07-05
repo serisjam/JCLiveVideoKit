@@ -8,7 +8,9 @@
 
 #import <Foundation/Foundation.h>
 #import "JCRtmpConnectStatus.h"
+
 #import "JCFLVVideoFrame.h"
+#import "JCFLVAudioFrame.h"
 
 @class JCRtmp;
 
@@ -31,5 +33,8 @@
 
 //发送视频流
 - (void)sendVideoFrame:(JCFLVVideoFrame *)videoFrame;
+
+//发送音频流
+- (void)sendAudioFrame:(JCFLVAudioFrame *)audioFrame;
 
 @end

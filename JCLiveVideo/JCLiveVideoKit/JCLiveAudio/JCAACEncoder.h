@@ -8,10 +8,13 @@
 
 #import <Foundation/Foundation.h>
 #import <AVFoundation/AVFoundation.h>
+#import "JCFLVAudioFrame.h"
+
+@class JCAACEncoder;
 
 @protocol JAACEncoderDelegate <NSObject>
 
-- (void)getRawAACData:(NSData *)aacData withADTSHeaderData:(NSData *)adtsHeaderData;
+- (void)getAudioEncoder:(JCAACEncoder *)audioEncoder withAuidoFrame:(JCFLVAudioFrame *)audioFrame;
 
 @end
 

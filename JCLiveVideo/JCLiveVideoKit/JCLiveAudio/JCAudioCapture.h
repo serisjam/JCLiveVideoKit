@@ -14,6 +14,9 @@ typedef void(^audioCaptureOriginDataBlock)(AudioBufferList audioBufferList);
 
 @interface JCAudioCapture : NSObject
 
+//是否开启静音
+@property (nonatomic, assign) BOOL isMuted;
+
 - (void)startRunning;
 - (void)stopRunning;
 

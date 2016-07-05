@@ -307,6 +307,22 @@ static void VideoCompressonOutputCallback(void *outputCallbackRefCon, void *sour
             videoFrame.spsData = encoder.sps;
             videoFrame.ppsData = encoder.pps;
             
+            //        如果是关键帧可以如下写入文件
+            //        const char bytes[] = "\x00\x00\x00\x01";
+            //        size_t length = (sizeof bytes) - 1; //string literals have implicit trailing '\0'
+            //        NSData *ByteHeader = [NSData dataWithBytes:bytes length:length];
+            //        [self.h264FileHandle writeData:ByteHeader];
+            //        [self.h264FileHandle writeData:data];
+            
+            //        非关键帧可以如下写入到一个文件
+            //        const char bytes[] = "\x00\x00\x00\x01";
+            //        size_t length = (sizeof bytes) - 1; //string literals have implicit trailing '\0'
+            //        NSData *ByteHeader = [NSData dataWithBytes:bytes length:length];
+            //        [self.h264FileHandle writeData:ByteHeader];
+            //        [self.h264FileHandle writeData:spsData];
+            //        [self.h264FileHandle writeData:ByteHeader];
+            //        [self.h264FileHandle writeData:ppsData];
+            
             if ([encoder.delegate respondsToSelector:@selector(getEncoder:withVideoFrame:)]) {
                 [encoder.delegate getEncoder:encoder withVideoFrame:videoFrame];
             }

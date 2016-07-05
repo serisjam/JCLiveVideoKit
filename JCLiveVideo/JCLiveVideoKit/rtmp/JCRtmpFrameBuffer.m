@@ -44,13 +44,21 @@ static const NSUInteger defaultMaxBuffers = 10;
 }
 
 - (void)addVideoFrame:(JCFLVVideoFrame *)videoFrame {
+    [self addFrame:videoFrame];
+}
+
+- (void)addAudioFrame:(JCFLVAudioFrame *)audioFrame {
+    [self addFrame:audioFrame];
+}
+
+- (void)addFrame:(id)flvFrame {
     
     dispatch_semaphore_wait(_lock, DISPATCH_TIME_FOREVER);
     if (self.sampleBuffers.count < defaultMaxBuffers) {
-        [self.sampleBuffers addObject:videoFrame];
+        [self.sampleBuffers addObject:flvFrame];
     } else {
         /// 排序
-        [self.sampleBuffers addObject:videoFrame];
+        [self.sampleBuffers addObject:flvFrame];
         NSArray *sortedSendQuery = [self.sampleBuffers sortedArrayUsingFunction:frameDataCompare context:NULL];
         [self.sampleBuffers removeAllObjects];
         [self.sampleBuffers addObjectsFromArray:sortedSendQuery];
@@ -58,25 +66,25 @@ static const NSUInteger defaultMaxBuffers = 10;
         [self disCardVideoFrame];
         
         /// 把当前第一帧存入时间缓存中
-        JCFLVVideoFrame *videoFrame = [self.sampleBuffers firstObject];
-        if (videoFrame) {
+        id frame = [self.sampleBuffers firstObject];
+        if (frame) {
             [self.sampleBuffers removeObjectAtIndex:0];
-            [self.buffers addObject:videoFrame];
+            [self.buffers addObject:frame];
         }
     }
     dispatch_semaphore_signal(_lock);
 }
 
-- (JCFLVVideoFrame *)getFirstVideoFrame {
+- (id)getFirstFrame {
     
     dispatch_semaphore_wait(_lock, DISPATCH_TIME_FOREVER);
-    JCFLVVideoFrame *videoFrame = [self.buffers objectAtIndex:0];
+    id frame = [self.buffers objectAtIndex:0];
     dispatch_semaphore_signal(_lock);
     
-    if (videoFrame) {
+    if (frame) {
         [self.buffers removeObjectAtIndex:0];
         
-        return videoFrame;
+        return frame;
     }
     
     return nil;
@@ -85,14 +93,27 @@ static const NSUInteger defaultMaxBuffers = 10;
 #pragma mark private
 
 NSInteger frameDataCompare(id obj1, id obj2, void *context){
-    JCFLVVideoFrame *frame1 = (JCFLVVideoFrame*) obj1;
-    JCFLVVideoFrame *frame2 = (JCFLVVideoFrame*) obj2;
+    
+    if ([obj1 isKindOfClass:[JCFLVVideoFrame class]]) {
+        JCFLVVideoFrame *frame1 = (JCFLVVideoFrame*) obj1;
+        JCFLVVideoFrame *frame2 = (JCFLVVideoFrame*) obj2;
+        
+        if (frame1.timestamp == frame2.timestamp)
+            return NSOrderedSame;
+        else if(frame1.timestamp > frame2.timestamp)
+            return NSOrderedDescending;
+        return NSOrderedAscending;
+    }
+    
+    JCFLVAudioFrame *frame1 = (JCFLVAudioFrame*) obj1;
+    JCFLVAudioFrame *frame2 = (JCFLVAudioFrame*) obj2;
     
     if (frame1.timestamp == frame2.timestamp)
         return NSOrderedSame;
     else if(frame1.timestamp > frame2.timestamp)
         return NSOrderedDescending;
     return NSOrderedAscending;
+    
 }
 
 //丢弃过期时间帧
@@ -122,11 +143,13 @@ NSInteger frameDataCompare(id obj1, id obj2, void *context){
 - (NSArray *)getDiscardPBFrame {
     NSMutableArray *discardFrame = [NSMutableArray array];
     
-    for (JCFLVVideoFrame *videoFrame in self.buffers) {
-        if (videoFrame.isKeyFrame && discardFrame.count > 0) {
-            break;
-        } else  {
-            [discardFrame addObject:videoFrame];
+    for (id frame in self.buffers) {
+        if ([frame isKindOfClass:[JCFLVVideoFrame class]]) {
+            if ([(JCFLVVideoFrame *)frame isKeyFrame] && discardFrame.count > 0) {
+                break;
+            } else  {
+                [discardFrame addObject:frame];
+            }
         }
     }
     
@@ -135,9 +158,11 @@ NSInteger frameDataCompare(id obj1, id obj2, void *context){
 
 - (JCFLVVideoFrame *)getFirstIFrame {
     
-    for (JCFLVVideoFrame *iVideoFrame in self.buffers) {
-        if (iVideoFrame.isKeyFrame ) {
-            return iVideoFrame;
+    for (id iFrame in self.buffers) {
+        if ([iFrame isKindOfClass:[JCFLVVideoFrame class]]) {
+            if ([(JCFLVVideoFrame *)iFrame isKeyFrame]) {
+                return iFrame;
+            }
         }
     }
     

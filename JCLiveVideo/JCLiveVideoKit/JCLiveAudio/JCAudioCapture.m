@@ -16,14 +16,30 @@
 
 @property (nonatomic, strong) audioCaptureOriginDataBlock captureOriginDataBlock;
 
+@property (nonatomic, assign) BOOL isRuning;
+
 @end
 
 @implementation JCAudioCapture
+
+- (void)dealloc {
+
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    
+    dispatch_sync(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
+        AudioOutputUnitStop(self.compentInstance);
+        AudioComponentInstanceDispose(self.compentInstance);
+        self.compentInstance = nil;
+        self.component = nil;
+        
+    });
+}
 
 - (instancetype)init {
     self = [super init];
     
     if (self) {
+        self.isRuning = NO;
         [self configAudioSession];
     }
     
@@ -35,10 +51,18 @@
     
     //设置类别，播放还是录音还是VOIP
     [self.audioSession setCategory:AVAudioSessionCategoryPlayAndRecord withOptions:AVAudioSessionCategoryOptionDefaultToSpeaker|AVAudioSessionCategoryOptionMixWithOthers error:nil];
+    
     //采样率
     [self.audioSession setPreferredSampleRate:44100 error:nil];
+    
     //当激活session时给其他音频一个通知
     [self.audioSession setActive:YES withOptions:AVAudioSessionSetActiveOptionNotifyOthersOnDeactivation error:nil];
+    
+    //切换手机话筒和麦克风
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(microphoneDeviceChange:) name:AVAudioSessionRouteChangeNotification object:self.audioSession];
+    //被其他语音输入打断
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(otherDeviceInterruption:) name:AVAudioSessionInterruptionNotification object:self.audioSession];
+    
     
     //创建一个音频组件描述来标识一个音频单元
     AudioComponentDescription acd;
@@ -99,24 +123,46 @@ static OSStatus handleInputBuffer(void *inRefCon,
                                   UInt32 inBusNumber,
                                   UInt32 inNumberFrames,
                                   AudioBufferList *ioData) {
-    AudioBuffer buffer;
-    buffer.mData = NULL;
-    buffer.mDataByteSize = 0;
-    buffer.mNumberChannels = 1;
     
-    AudioBufferList buffers;
-    buffers.mNumberBuffers = 1;
-    buffers.mBuffers[0] = buffer;
-    
-    JCAudioCapture *source = (__bridge JCAudioCapture *)inRefCon;
-    
-    OSStatus status = AudioUnitRender(source.compentInstance, ioActionFlags, inTimeStamp, inBusNumber, inNumberFrames, &buffers);
-    
-    if (source.captureOriginDataBlock) {
-        source.captureOriginDataBlock(buffers);
+    @autoreleasepool {
+        JCAudioCapture *source = (__bridge JCAudioCapture *)inRefCon;
+        
+        if (!source) {
+            return -1;
+        }
+        
+        AudioBuffer buffer;
+        buffer.mData = NULL;
+        buffer.mDataByteSize = 0;
+        buffer.mNumberChannels = 1;
+        
+        AudioBufferList buffers;
+        buffers.mNumberBuffers = 1;
+        buffers.mBuffers[0] = buffer;
+        
+        OSStatus status = AudioUnitRender(source.compentInstance, ioActionFlags, inTimeStamp, inBusNumber, inNumberFrames, &buffers);
+        
+        if (!source.isRuning) {
+            dispatch_sync(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
+                AudioOutputUnitStop(source.compentInstance);
+            });
+            
+            return status;
+        }
+        
+        if (source.isMuted) {
+            for (int i = 0; i < buffers.mNumberBuffers; i++) {
+                AudioBuffer ab = buffers.mBuffers[i];
+                memset(ab.mData, 0, ab.mDataByteSize);
+            }
+        }
+        
+        if (source.captureOriginDataBlock && !status) {
+            source.captureOriginDataBlock(buffers);
+        }
+        
+        return status;
     }
-    
-    return status;
 }
 
 #pragma mark publich method
@@ -126,11 +172,93 @@ static OSStatus handleInputBuffer(void *inRefCon,
 }
 
 - (void)startRunning {
-    AudioOutputUnitStart(self.compentInstance);
+    if (_isRuning) {
+        return ;
+    }
+    
+    __weak typeof(self) weakSelf = self;
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
+        weakSelf.isRuning = YES;
+        AudioOutputUnitStart(self.compentInstance);
+    });
 }
 
 - (void)stopRunning {
-    AudioOutputUnitStop(self.compentInstance);
+    if (!_isRuning) {
+        return ;
+    }
+    
+    __weak typeof(self) weakSelf = self;
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
+        weakSelf.isRuning = NO;
+        AudioOutputUnitStop(self.compentInstance);
+    });
+}
+
+#pragma mark Notification
+
+- (void)microphoneDeviceChange:(NSNotification *)notification {
+    NSString* seccReason = @"";
+    NSInteger  reason = [[[notification userInfo] objectForKey:AVAudioSessionRouteChangeReasonKey] integerValue];
+    //  AVAudioSessionRouteDescription* prevRoute = [[notification userInfo] objectForKey:AVAudioSessionRouteChangePreviousRouteKey];
+    switch (reason) {
+        case AVAudioSessionRouteChangeReasonNoSuitableRouteForCategory:
+            seccReason = @"The route changed because no suitable route is now available for the specified category.";
+            break;
+        case AVAudioSessionRouteChangeReasonWakeFromSleep:
+            seccReason = @"The route changed when the device woke up from sleep.";
+            break;
+        case AVAudioSessionRouteChangeReasonOverride:
+            seccReason = @"The output route was overridden by the app.";
+            break;
+        case AVAudioSessionRouteChangeReasonCategoryChange:
+            seccReason = @"The category of the session object changed.";
+            break;
+        case AVAudioSessionRouteChangeReasonOldDeviceUnavailable:
+            seccReason = @"The previous audio output path is no longer available.";
+            break;
+        case AVAudioSessionRouteChangeReasonNewDeviceAvailable:
+            seccReason = @"A preferred new audio output path is now available.";
+            break;
+        case AVAudioSessionRouteChangeReasonUnknown:
+        default:
+            seccReason = @"The reason for the change is unknown.";
+            break;
+    }
+    AVAudioSessionPortDescription *input = [[self.audioSession.currentRoute.inputs count] ? self.audioSession.currentRoute.inputs:nil objectAtIndex:0];
+    if (input.portType == AVAudioSessionPortHeadsetMic) {
+    }
+}
+
+- (void)otherDeviceInterruption:(NSNotification *)notification {
+    NSInteger reason = 0;
+    
+    if ([notification.name isEqualToString:AVAudioSessionInterruptionNotification]) {
+        __weak typeof(self) weakSelf = self;
+        reason = [[[notification userInfo] objectForKey:AVAudioSessionInterruptionTypeKey] integerValue];
+        if (reason == AVAudioSessionInterruptionTypeBegan) {
+            if (weakSelf.isRuning) {
+                dispatch_sync(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
+                    AudioOutputUnitStop(weakSelf.compentInstance);
+                });
+            }
+        }
+        
+        if (reason == AVAudioSessionInterruptionTypeEnded) {
+            NSNumber* seccondReason = [[notification userInfo] objectForKey:AVAudioSessionInterruptionOptionKey] ;
+            switch ([seccondReason integerValue]) {
+                case AVAudioSessionInterruptionOptionShouldResume:
+                    if (weakSelf.isRuning) {
+                        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
+                            AudioOutputUnitStart(weakSelf.compentInstance);
+                        });
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+    };
 }
 
 @end

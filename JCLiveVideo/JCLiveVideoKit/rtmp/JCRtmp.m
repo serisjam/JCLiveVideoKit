@@ -19,6 +19,7 @@
 @property (nonatomic, strong) dispatch_queue_t rtmpQueque;
 
 @property (nonatomic, assign) BOOL isVideoHeader;
+@property (nonatomic, assign) BOOL isAudioHeader;
 @property (nonatomic, strong) JCRtmpFrameBuffer *frameBuffer;
 
 @end
@@ -34,6 +35,7 @@
         self.pushURL = pushURL;
         
         self.isVideoHeader = NO;
+        self.isAudioHeader = NO;
         self.frameBuffer = [[JCRtmpFrameBuffer alloc] init];
     }
     
@@ -100,6 +102,14 @@
     });
 }
 
+- (void)sendAudioFrame:(JCFLVAudioFrame *)audioFrame {
+    __weak typeof(self) weakSelf = self;
+    dispatch_async(_rtmpQueque, ^{
+        [weakSelf.frameBuffer addAudioFrame:audioFrame];
+        [weakSelf sendFrameData];
+    });
+}
+
 #pragma mark private method
 
 - (void)cleanAll {
@@ -110,6 +120,7 @@
     _rtmp = NULL;
     
     self.isVideoHeader = NO;
+    self.isAudioHeader = NO;
 }
 
 - (void)callBackFailed {
@@ -123,17 +134,26 @@
         return ;
     }
     
-    JCFLVVideoFrame *videoFrame = [_frameBuffer getFirstVideoFrame];
+    id frame = [_frameBuffer getFirstFrame];
     
-    if (videoFrame == nil) {
+    if (frame == nil) {
         return ;
     }
     
-    if (!_isVideoHeader) {
-        _isVideoHeader = YES;
-        [self sendVideoHeader:videoFrame];
+    if ([frame isKindOfClass:[JCFLVVideoFrame class]]) {
+        if (!_isVideoHeader) {
+            _isVideoHeader = YES;
+            [self sendVideoHeader:frame];
+        } else {
+            [self sendVideoData:frame];
+        }
     } else {
-        [self sendVideoData:videoFrame];
+        if (!_isAudioHeader) {
+            _isAudioHeader = YES;
+            [self sendAudioHeader:frame];
+        } else {
+            [self sendAudioData:frame];
+        }
     }
 }
 
@@ -217,6 +237,37 @@
     
     [self sendPacket:RTMP_PACKET_TYPE_VIDEO data:body size:rtmpLength nTimestamp:videoFrame.timestamp];
     
+    free(body);
+}
+
+
+- (void)sendAudioHeader:(JCFLVAudioFrame *)audioFrame{
+    if(!audioFrame || !audioFrame.audioInfo) return;
+    
+    NSInteger rtmpLength = audioFrame.audioInfo.length + 2;/*spec data长度,一般是2*/
+    unsigned char * body = (unsigned char*)malloc(rtmpLength);
+    memset(body,0,rtmpLength);
+    
+    /*AF 00 + AAC RAW data*/
+    body[0] = 0xAF;
+    body[1] = 0x00;
+    memcpy(&body[2],audioFrame.audioInfo.bytes,audioFrame.audioInfo.length); /*spec_buf是AAC sequence header数据*/
+    [self sendPacket:RTMP_PACKET_TYPE_AUDIO data:body size:rtmpLength nTimestamp:0];
+    free(body);
+}
+
+- (void)sendAudioData:(JCFLVAudioFrame *)frame {
+    if(!frame) return;
+    
+    NSInteger rtmpLength = frame.contentData.length + 2;/*spec data长度,一般是2*/
+    unsigned char * body = (unsigned char*)malloc(rtmpLength);
+    memset(body,0,rtmpLength);
+    
+    /*AF 01 + AAC RAW data*/
+    body[0] = 0xAF;
+    body[1] = 0x01;
+    memcpy(&body[2],frame.contentData.bytes,frame.contentData.length);
+    [self sendPacket:RTMP_PACKET_TYPE_AUDIO data:body size:rtmpLength nTimestamp:frame.timestamp];
     free(body);
 }
 
